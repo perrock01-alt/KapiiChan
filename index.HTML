@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="th" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Kapii Chan - บริการเติมเกม 24 ชม.</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#8B4513', secondary: '#A0522D', accent: '#D2B48C',
+                        cream: '#FDFBF7', 'brown-light': '#F4ECE4', success: '#22c55e',
+                    },
+                    fontFamily: { sans: ['Kanit', 'sans-serif'] },
+                    animation: {
+                        'slide-up': 'slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                        'toast-in': 'toastIn 0.3s ease-out forwards',
+                        'toast-out': 'toastOut 0.3s ease-in forwards',
+                    },
+                    keyframes: {
+                        slideUp: { '0%': { transform: 'translateY(20px)', opacity: '0' }, '100%': { transform: 'translateY(0)', opacity: '1' } },
+                        toastIn: { '0%': { transform: 'translate(-50%, -20px)', opacity: '0' }, '100%': { transform: 'translate(-50%, 0)', opacity: '1' } },
+                        toastOut: { '0%': { transform: 'translate(-50%, 0)', opacity: '1' }, '100%': { transform: 'translate(-50%, -20px)', opacity: '0' } }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #FDFBF7;
+            background-image: radial-gradient(#D2B48C 0.5px, transparent 0.5px), radial-gradient(#D2B48C 0.5px, #FDFBF7 0.5px);
+            background-size: 20px 20px; background-position: 0 0, 10px 10px; background-attachment: fixed;
+            -webkit-tap-highlight-color: transparent; scroll-behavior: smooth;
+        }
+        .hide-scroll::-webkit-scrollbar { display: none; }
+        .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.8); box-shadow: 0 -4px 30px rgba(139, 69, 19, 0.08);
+        }
+        .page { display: none; opacity: 0; transition: opacity 0.2s ease-in-out; }
+        .page.active { display: block; opacity: 1; }
+        
+        /* Modal Animation */
+        .modal-enter { opacity: 0; transform: scale(0.95); }
+        .modal-enter-active { opacity: 1; transform: scale(1); transition: all 0.2s; }
+        .modal-overlay { background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(2px); }
+        
+        /* Loader */
+        #loader { transition: opacity 0.3s ease-out; pointer-events: none; }
+    </style>
+</head>
+<body class="text-gray-700 h-full overflow-x-hidden selection:bg-primary selection:text-white relative">
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed top-6 left-1/2 -translate-x-1/2 bg-gray-800/90 text-white px-6 py-2.5 rounded-full shadow-xl opacity-0 pointer-events-none z-[100] text-sm font-medium transition-all backdrop-blur-sm flex items-center gap-2">
+        <svg class="w-4 h-4 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+        <span id="toast-msg">แจ้งเตือน</span>
+    </div>
+
+    <!-- Loading Screen -->
+    <div id="loader" class="fixed inset-0 z-[100] bg-[#FDFBF7] flex flex-col items-center justify-center opacity-100 pointer-events-auto">
+        <div class="w-10 h-10 border-4 border-gray-200 border-t-primary rounded-full animate-spin mb-4"></div>
+        <p class="text-primary font-bold animate-pulse">กำลังโหลด...</p>
+    </div>
+
+    <!-- HOME PAGE -->
+    <div id="page-home" class="page active min-h-screen pb-32">
+        <header class="relative pt-8 pb-4 px-4 mb-2">
+            <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-white to-[#FFFDF9] rounded-b-[40px] shadow-sm -z-10"></div>
+            
+            <div class="container mx-auto max-w-xl text-center relative z-10">
+                <div class="flex flex-col items-center">
+                    <div class="relative mb-2 group cursor-pointer" onclick="window.scrollTo({top:0, behavior:'smooth'})">
+                        <div class="relative w-24 h-24 rounded-full p-1 bg-white shadow-xl overflow-hidden">
+                            <img src="https://i.postimg.cc/wvhQLHFD/Untitled_3.png" onerror="this.src='https://placehold.co/200x200/8B4513/FFF?text=KAPII'" class="w-full h-full object-cover">
+                        </div>
+                        <div class="absolute -bottom-1 -right-1 bg-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-md text-success border border-green-100 flex items-center gap-1">
+                            <span class="w-2 h-2 rounded-full bg-success animate-pulse"></span> ONLINE
+                        </div>
+                    </div>
+                    <h1 class="text-2xl font-bold text-primary mb-0.5">Kapii Chan</h1>
+                    <p class="text-secondary/80 text-xs font-medium">ร้านเติมเกมคาปิบาร่า เพื่อนซี้เกมเมอร์</p>
+                </div>
+                
+                <!-- Trust Badges -->
+                <div class="flex justify-center gap-2 mt-4 mb-2 overflow-x-auto hide-scroll px-2">
+                    <div class="flex items-center gap-1 bg-white/80 px-2 py-1 rounded-lg border border-gray-100 shadow-sm shrink-0">
+                        <svg class="w-3 h-3 text-success" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        <span class="text-[10px] font-medium text-gray-600">ปลอดภัย 100%</span>
+                    </div>
+                    <div class="flex items-center gap-1 bg-white/80 px-2 py-1 rounded-lg border border-gray-100 shadow-sm shrink-0">
+                        <svg class="w-3 h-3 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                        <span class="text-[10px] font-medium text-gray-600">เติมไว</span>
+                    </div>
+                    <div class="flex items-center gap-1 bg-white/80 px-2 py-1 rounded-lg border border-gray-100 shadow-sm shrink-0">
+                        <svg class="w-3 h-3 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        <span class="text-[10px] font-medium text-gray-600">เปิด 24 ชม.</span>
+                    </div>
+                </div>
+
+                <!-- Search -->
+                <div class="mt-2 relative max-w-sm mx-auto">
+                    <div class="relative bg-white rounded-xl flex items-center shadow-sm p-1 border border-gray-100">
+                        <div class="pl-3 text-accent"><svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg></div>
+                        <input type="search" id="search-input" placeholder="ค้นหาเกม..." class="w-full py-2 px-2 bg-transparent border-none focus:ring-0 text-gray-700 text-sm">
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="container mx-auto max-w-7xl px-3">
+            <div id="product-grid" class="flex flex-col gap-6 pb-10">
+                <!-- JS Will Populate -->
+            </div>
+        </main>
+    </div>
+
+    <!-- DETAIL PAGE -->
+    <div id="page-detail" class="page min-h-screen bg-gray-50 pb-32">
+        <!-- JS Will Populate -->
+    </div>
+
+    <!-- ORDER MODAL -->
+    <div id="order-modal" class="fixed inset-0 z-[60] hidden flex items-end md:items-center justify-center">
+        <div class="absolute inset-0 modal-overlay transition-opacity" onclick="closeOrderModal()"></div>
+        <div class="relative bg-white rounded-t-3xl md:rounded-3xl p-6 pt-2 w-full md:w-[400px] shadow-2xl transform transition-transform duration-300 translate-y-full md:translate-y-0" id="modal-content">
+            
+            <div class="w-full flex justify-center py-2 mb-2 md:hidden">
+                <div class="w-12 h-1.5 bg-gray-200 rounded-full"></div>
+            </div>
+
+            <div class="flex items-center gap-3 mb-4 border-b border-gray-100 pb-4">
+                <div class="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center text-primary">
+                    <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-gray-800">ยืนยันคำสั่งซื้อ</h3>
+                    <p class="text-xs text-gray-500">ชำระเงินและแจ้งสลิป</p>
+                </div>
+            </div>
+
+            <div class="bg-green-50 p-3 rounded-xl border border-green-100 mb-3 flex items-center justify-between relative overflow-hidden">
+                <div class="relative z-10">
+                    <div class="flex items-center gap-1 mb-0.5">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSaQ7VCuHWVjlwMepKPOBNESROwguCmbR1smNQ9gFrzIA&s=10" class="w-4 h-4 object-contain rounded-full">
+                        <p class="text-[10px] text-green-700 font-bold">ธ.กสิกรไทย (KBANK)</p>
+                    </div>
+                    <p class="text-lg font-bold text-gray-800 tracking-wide font-mono">219-116-9185</p>
+                    <p class="text-xs text-gray-500">Kapii Chan</p>
+                </div>
+                <button onclick="copyBankNum()" class="relative z-10 bg-white border border-green-200 text-green-600 px-3 py-1 rounded-lg text-xs font-bold hover:bg-green-600 hover:text-white transition-colors shadow-sm active:scale-95">
+                    COPY
+                </button>
+                <div class="absolute -right-2 -bottom-4 opacity-10">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSaQ7VCuHWVjlwMepKPOBNESROwguCmbR1smNQ9gFrzIA&s=10" class="w-24 h-24 grayscale">
+                </div>
+            </div>
+            
+            <div class="bg-gray-50 p-3 rounded-xl border border-gray-200 mb-4 relative">
+                <textarea id="order-text" class="w-full bg-transparent border-none resize-none text-sm text-gray-700 font-mono focus:ring-0 p-0 leading-relaxed" rows="4" readonly></textarea>
+                <button onclick="copyOrderOnly()" class="absolute top-2 right-2 text-[10px] bg-white border border-gray-200 px-2 py-1 rounded hover:bg-gray-100 text-primary font-bold shadow-sm active:scale-95">Copy รายละเอียด</button>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3 mb-2">
+                <button onclick="copyOrderAndRedirect('line')" class="col-span-2 w-full bg-[#06C755] hover:bg-[#05b64d] text-white font-bold py-3 rounded-xl shadow-lg shadow-green-500/20 active:scale-95 transition-transform flex items-center justify-center gap-2">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.486 2 2 6.033 2 11.006c0 2.766 1.487 5.253 3.824 6.892-.092.68-.492 2.246-.576 2.593-.066.273.11.332.268.225 0 0 2.22-1.215 2.508-1.37.057-.03.794.215.892.235 1.57.43 3.238.653 4.908.653 5.514 0 10-4.033 10-9.006C23.826 6.033 19.514 2 12 2z"/></svg>
+                    แจ้งสลิปทาง LINE (@KapiiChan)
+                </button>
+                <button onclick="copyOrderAndRedirect('fb')" class="col-span-2 w-full bg-[#1877F2] hover:bg-[#166fe5] text-white font-bold py-3 rounded-xl shadow-lg shadow-blue-500/20 active:scale-95 transition-transform flex items-center justify-center gap-2">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                    แจ้งสลิปทาง Facebook
+                </button>
+            </div>
+            <button onclick="closeOrderModal()" class="w-full text-gray-400 text-xs py-2 hover:text-gray-600">ยกเลิก</button>
+        </div>
+    </div>
+
+    <!-- Back to Top -->
+    <button id="back-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="fixed bottom-24 left-4 z-40 w-10 h-10 bg-white/90 backdrop-blur text-primary rounded-full shadow-lg border border-primary/10 flex items-center justify-center opacity-0 translate-y-10 transition-all duration-300 pointer-events-none">
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" /></svg>
+    </button>
+
+    <!-- Floating Contact -->
+    <div class="fixed bottom-24 right-4 z-40 flex flex-col items-end gap-3 group">
+        <div id="contact-menu" class="flex flex-col gap-3 transition-all duration-300 opacity-0 translate-y-8 invisible pointer-events-none origin-bottom">
+            <a href="https://line.me/R/ti/p/@KapiiChan" target="_blank" class="flex items-center gap-3 group/item hover:-translate-x-1 transition-transform"><span class="bg-white text-primary text-xs px-2 py-1 rounded shadow border border-primary/10">Line</span><div class="w-10 h-10 rounded-xl shadow bg-white p-1"><img src="https://upload.wikimedia.org/wikipedia/commons/4/41/LINE_logo.svg" class="w-full h-full object-contain"></div></a>
+            <a href="https://www.facebook.com/share/1BrAwkaah7/" target="_blank" class="flex items-center gap-3 group/item hover:-translate-x-1 transition-transform"><span class="bg-white text-primary text-xs px-2 py-1 rounded shadow border border-primary/10">FB</span><div class="w-10 h-10 rounded-xl shadow bg-white p-1"><img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/2021_Facebook_icon.svg" class="w-full h-full object-contain"></div></a>
+        </div>
+        <button onclick="toggleContactMenu()" class="w-12 h-12 rounded-xl bg-primary text-white shadow-xl shadow-primary/30 flex items-center justify-center relative z-50 hover:scale-105 transition-transform active:scale-95">
+            <svg id="contact-icon-open" class="w-6 h-6 absolute transition-all" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" /></svg>
+            <svg id="contact-icon-close" class="w-6 h-6 absolute transition-all opacity-0 rotate-90" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+        </button>
+    </div>
+
+    <!-- Bottom Nav -->
+    <div class="fixed bottom-6 left-1/2 -translate-x-1/2 w-[95%] max-w-md z-40">
+        <div class="glass-nav rounded-2xl px-1 py-1 shadow-2xl">
+            <div class="flex justify-between items-center" id="nav-container">
+                <button class="nav-btn hidden w-full flex items-center justify-center py-2.5 rounded-xl text-[#8B4513] bg-orange-50 font-bold gap-2 shadow-inner" id="nav-home-btn" onclick="showPage('home')">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" /></svg> กลับ
+                </button>
+                <div id="nav-categories" class="flex w-full justify-between gap-1">
+                    <button class="nav-btn cat-btn active flex-1 py-2 rounded-xl text-gray-400" data-cat="all"><span class="text-[10px] font-bold block text-center">ทั้งหมด</span></button>
+                    <button class="nav-btn cat-btn flex-1 py-2 rounded-xl text-gray-400" data-cat="เติมเกม"><span class="text-[10px] font-bold block text-center">เติมเกม</span></button>
+                    <button class="nav-btn cat-btn flex-1 py-2 rounded-xl text-gray-400" data-cat="บัตรเติมเกม"><span class="text-[10px] font-bold block text-center">บัตรเติม</span></button>
+                    <button class="nav-btn cat-btn flex-1 py-2 rounded-xl text-gray-400" data-cat="บัตรกำนัล"><span class="text-[10px] font-bold block text-center">วอเชอร์</span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========================
+        // 1. DATA
+        // ========================
+        const products = [
+             { id: '1', name: 'เติมเกม RoV', shortName: 'RoV', description: 'เติมคูปอง RoV', imageUrl: 'https://static.wikia.nocookie.net/arena-of-valor/images/2/29/RoV_%E0%B9%82%E0%B8%A5%E0%B9%82%E0%B8%81%E0%B9%89%E0%B9%83%E0%B8%AB%E0%B8%A1%E0%B9%88.png/revision/latest?cb=20220921035536&path-prefix=th', category: 'เติมเกม', packages: [
+                { name: '620 คูปอง ( Valorpass ขั้นสูง )', price: 484, group: 'แพคเกจพิเศษ' },
+                { name: '555 คูปอง ( VP ขั้นสูง ราคาประหยัด เคยเปิดแล้ว )', price: 439, group: 'แพคเกจพิเศษ' },
+                { name: '370 คูปอง ( Valorpass LV 1 )', price: 290, group: 'แพคเกจพิเศษ' },
+                { name: '306 คูปอง ( VP LV 1 ราคาประหยัด เคยเปิดแล้ว )', price: 245, group: 'แพคเกจพิเศษ' },
+                { name: '209 คูปอง ( VP LV 1 ราคาประหยัด แบบไม่เคยเปิด )', price: 168, group: 'แพคเกจพิเศษ' },
+                { name: '110 คูปอง', price: 87, group: 'เลือกแพคเกจ' }, { name: '84 คูปอง', price: 67, group: 'เลือกแพคเกจ' }, { name: '72 คูปอง', price: 58, group: 'เลือกแพคเกจ' }, { name: '60 คูปอง', price: 48, group: 'เลือกแพคเกจ' }, { name: '24 คูปอง', price: 20, group: 'เลือกแพคเกจ' }, { name: '11 คูปอง', price: 10, group: 'เลือกแพคเกจ' }
+            ]},
+            { id: '2', name: 'เติมเกม Free Fire', shortName: 'Free Fire', description: 'เติมเพชร Free Fire', imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSMm-Gg3Nmg7n8ihxwV5QosXJSIKEesWi3JbQ&s', category: 'เติมเกม', packages: [
+                { name: '18,490 เพชร', price: 4775, group: 'เลือกแพคเกจ' }, { name: '16,593 เพชร', price: 4299, group: 'เลือกแพคเกจ' }, { name: '14,792 เพชร', price: 3820, group: 'เลือกแพคเกจ' }, { name: '12,895 เพชร', price: 3344, group: 'เลือกแพคเกจ' }, { name: '11,094 เพชร', price: 2865, group: 'เลือกแพคเกจ' }, { name: '9,197 เพชร', price: 2389, group: 'เลือกแพคเกจ' }, { name: '7,396 เพชร', price: 1910, group: 'เลือกแพคเกจ' }, { name: '6,551 เพชร', price: 1721, group: 'เลือกแพคเกจ' }, { name: '5,499 เพชร', price: 1434, group: 'เลือกแพคเกจ' }, { name: '3,698 เพชร', price: 955, group: 'เลือกแพคเกจ' }, { name: '2,111 เพชร', price: 567, group: 'เลือกแพคเกจ' }, { name: '1,801 เพชร', price: 479, group: 'เลือกแพคเกจ' }, { name: '1,052 เพชร', price: 288, group: 'เลือกแพคเกจ' }, { name: '690 เพชร', price: 192, group: 'เลือกแพคเกจ' }, { name: '517 เพชร', price: 144, group: 'เลือกแพคเกจ' }, { name: '310 เพชร', price: 86, group: 'เลือกแพคเกจ' }, { name: '172 เพชร', price: 48, group: 'เลือกแพคเกจ' }, { name: '68 เพชร', price: 20, group: 'เลือกแพคเกจ' }, { name: '33 เพชร', price: 10, group: 'เลือกแพคเกจ' },
+                { name: 'แพคเกจรายสัปดาห์', price: 65, group: 'แพคเกจพิเศษ' }, { name: 'แพคเกจรายเดือน', price: 288, group: 'แพคเกจพิเศษ' }, { name: 'แพคเกจรายสัปดาห์มินิ', price: 33, group: 'แพคเกจพิเศษ' }, { name: 'BP Card', price: 86, group: 'แพคเกจพิเศษ' },
+                { name: 'แพ็กเติบโต สำหรับ เวล 6', subtext: '(เติมได้ ไอดีละ 1 ครั้ง)', price: 9, group: 'แพ็กเติบโต' }, { name: 'แพ็กเติบโต สำหรับ เวล 10', subtext: '(เติมได้ ไอดีละ 1 ครั้ง)', price: 19, group: 'แพ็กเติบโต' }, { name: 'แพ็กเติบโต สำหรับ เวล 15', subtext: '(เติมได้ ไอดีละ 1 ครั้ง)', price: 19, group: 'แพ็กเติบโต' }, { name: 'แพ็กเติบโต สำหรับ เวล 20', subtext: '(เติมได้ ไอดีละ 1 ครั้ง)', price: 19, group: 'แพ็กเติบโต' }, { name: 'แพ็กเติบโต สำหรับ เวล 25', subtext: '(เติมได้ ไอดีละ 1 ครั้ง)', price: 19, group: 'แพ็กเติบโต' }, { name: 'แพ็กเติบโต สำหรับ เวล 30', subtext: '(เติมได้ ไอดีละ 1 ครั้ง)', price: 29, group: 'แพ็กเติบโต' }
+            ]},
+            { id: '3', name: 'เติม Genshin Impact', shortName: 'Genshin Impact', description: 'Genesis Crystals สำหรับนักเดินทาง', imageUrl: 'https://i.pinimg.com/1200x/73/32/52/7332527b2baa4785959b1b8e2ba41dce.jpg', category: 'เติมเกม', packages: [
+                { name: '60 Genesis Crystals', price: 25, group: 'Genesis Crystals' }, { name: '300+30 Genesis Crystals', price: 115, group: 'Genesis Crystals' }, { name: '980+110 Genesis Crystals', price: 350, group: 'Genesis Crystals' }, { name: '1,980+260 Genesis Crystals', price: 723, group: 'Genesis Crystals' }, { name: '3,280+600 Genesis Crystals', price: 1168, group: 'Genesis Crystals' }, { name: '6,480+1,600 Genesis Crystals', price: 2238, group: 'Genesis Crystals' },
+                { name: 'พรแห่งดวงจันทร์', price: 116, group: 'พรแห่งดวงจันทร์' }, { name: 'พรแห่งดวงจันทร์ X 2 แพคเกจ', price: 232, group: 'พรแห่งดวงจันทร์' }, { name: 'พรแห่งดวงจันทร์ X 3 แพคเกจ', price: 348, group: 'พรแห่งดวงจันทร์' }, { name: 'พรแห่งดวงจันทร์ X 4 แพคเกจ', price: 464, group: 'พรแห่งดวงจันทร์' }, { name: 'พรแห่งดวงจันทร์ X 5 แพคเกจ', price: 580, group: 'พรแห่งดวงจันทร์' },
+                { name: 'เหมาทุกแพคเกจอย่างละครั้ง', subtext: 'ไม่รวมพรดวงจันทร์', price: 4668, group: 'แพคเกจพิเศษ' }, { name: '6,480+1,600 Genesis Crystals X 2 แพคเกจ', price: 4477, group: 'แพคเกจพิเศษ' }, { name: '6,480+1,600 Genesis Crystals X 3 แพคเกจ', price: 6715, group: 'แพคเกจพิเศษ' }, { name: '6,480+1,600 Genesis Crystals X 5 แพคเกจ', price: 11192, group: 'แพคเกจพิเศษ' }, { name: '6,480+1,600 Genesis Crystals X 10 แพคเกจ', price: 22385, group: 'แพคเกจพิเศษ' }, { name: '6,480+1,600 Genesis Crystals X 15 แพคเกจ', price: 33578, group: 'แพคเกจพิเศษ' },
+                { name: '60 Chronal Nexus', price: 26, group: 'Chronal Nexus' }, { name: '300+30 Chronal Nexus', price: 137, group: 'Chronal Nexus' }, { name: '980+110 Chronal Nexus', price: 382, group: 'Chronal Nexus' }, { name: '1,980+260 Chronal Nexus', price: 818, group: 'Chronal Nexus' }, { name: '3,280+600 Chronal Nexus', price: 1252, group: 'Chronal Nexus' }, { name: '6,480+1,600 Chronal Nexus', price: 2475, group: 'Chronal Nexus' }
+            ]},
+            { id: '5', name: 'เติม Valorant Points', shortName: 'Valorant Points', description: 'Valorant Points (VP) สำหรับสายยิง', imageUrl: 'https://i.pinimg.com/736x/cf/ae/88/cfae886e263126f685510e2f45b82970.jpg', category: 'เติมเกม', packages: [
+                { name: '1475 VP', subtext: 'Nanomight Collection แยกชิ้น', price: 375, group: 'แพคเกจพิเศษ' }, { name: '2525 VP', subtext: 'ORA by OneTap Collection แยกชิ้น', price: 625, group: 'แพคเกจพิเศษ' }, { name: '3050 VP', subtext: 'Nanomight Collection Melee', price: 750, group: 'แพคเกจพิเศษ' }, { name: '4650 VP', subtext: 'Dolmir\'s Revenge Collection Melee', price: 1134, group: 'แพคเกจพิเศษ' }, { name: '5350 VP', subtext: 'ORA by OneTap Collection Melee', price: 1268, group: 'แพคเกจพิเศษ' }, { name: '8875 VP', subtext: 'Dolmir\'s Revenge Collection Bundle', price: 2143, group: 'แพคเกจพิเศษ' }, { name: '10000 VP', subtext: 'ORA by OneTap Collection Bundle', price: 2402, group: 'แพคเกจพิเศษ' },
+                { name: '475 VP', price: 123, group: 'เลือกแพคเกจ' }, { name: '1000 VP', price: 245, group: 'เลือกแพคเกจ' }, { name: '1475 VP', price: 367, group: 'เลือกแพคเกจ' }, { name: '2050 VP', price: 488, group: 'เลือกแพคเกจ' }, { name: '2525 VP', price: 615, group: 'เลือกแพคเกจ' }, { name: '3050 VP', price: 735, group: 'เลือกแพคเกจ' }, { name: '3650 VP', price: 865, group: 'เลือกแพคเกจ' }, { name: '4100 VP', price: 975, group: 'เลือกแพคเกจ' }, { name: '4125 VP', price: 990, group: 'เลือกแพคเกจ' }, { name: '4650 VP', price: 1110, group: 'เลือกแพคเกจ' }, { name: '5350 VP', price: 1240, group: 'เลือกแพคเกจ' }, { name: '5825 VP', price: 1360, group: 'เลือกแพคเกจ' }, { name: '6350 VP', price: 1485, group: 'เลือกแพคเกจ' }, { name: '6700 VP', price: 1596, group: 'เลือกแพคเกจ' }, { name: '6825 VP', price: 1605, group: 'เลือกแพคเกจ' }, { name: '7150 VP', price: 1710, group: 'เลือกแพคเกจ' }, { name: '7400 VP', price: 1725, group: 'เลือกแพคเกจ' }, { name: '7750 VP', price: 1838, group: 'เลือกแพคเกจ' }, { name: '7875 VP', price: 1850, group: 'เลือกแพคเกจ' }, { name: '8200 VP', price: 1950, group: 'เลือกแพคเกจ' }, { name: '8400 VP', price: 1975, group: 'เลือกแพคเกจ' }, { name: '8750 VP', price: 2085, group: 'เลือกแพคเกจ' }, { name: '9000 VP', price: 2105, group: 'เลือกแพคเกจ' }, { name: '9475 VP', price: 2227, group: 'เลือกแพคเกจ' }, { name: '9800 VP', price: 2330, group: 'เลือกแพคเกจ' }, { name: '10000 VP', price: 2349, group: 'เลือกแพคเกจ' }, { name: '11000 VP', price: 2480, group: 'เลือกแพคเกจ' }, { name: '12000 VP', price: 2730, group: 'เลือกแพคเกจ' }, { name: '13050 VP', price: 2975, group: 'เลือกแพคเกจ' }, { name: '14650 VP', price: 3350, group: 'เลือกแพคเกจ' }, { name: '16350 VP', price: 3730, group: 'เลือกแพคเกจ' }, { name: '22000 VP', price: 4960, group: 'เลือกแพคเกจ' }
+            ]},
+            { id: '6', name: 'PUBG ID (ไทย)', shortName: 'PUBG ID (ไทย)', description: 'เติม UC (THB) สำหรับไอดีไทย', imageUrl: 'https://i.pinimg.com/736x/63/48/2f/63482fb173cb7b7cc6e2673960e9eb29.jpg', category: 'เติมเกม', packages: [
+                { name: '60 UC', price: 32, group: 'Normal' }, { name: '325 UC', price: 148, group: 'Normal' }, { name: '660 UC', price: 298, group: 'Normal' }, { name: '1800 UC', price: 735, group: 'Normal' }, { name: '3850 UC', subtext: '(+BP 40)', price: 1445, group: 'Normal' }, { name: '8100 UC', subtext: '(+BP 80)', price: 2870, group: 'Normal' },
+                { name: '385 UC', subtext: '60+325', price: 175, group: 'Combo' }, { name: '720 UC', subtext: '60+660', price: 328, group: 'Combo' }, { name: '985 UC', subtext: '325+660', price: 443, group: 'Combo' }, { name: '1860 UC', subtext: '60+1800', price: 765, group: 'Combo' }, { name: '2125 UC', subtext: '325+1800', price: 880, group: 'Combo' }, { name: '2460 UC', subtext: '660+1800', price: 1028, group: 'Combo' }, { name: '3910 UC', subtext: '60+3850', price: 1470, group: 'Combo' }, { name: '4175 UC', subtext: '325+3850', price: 1585, group: 'Combo' }, { name: '4510 UC', subtext: '660+3850', price: 1735, group: 'Combo' }, { name: '5650 UC', subtext: '1800+3850', price: 2170, group: 'Combo' }, { name: '8160 UC', subtext: '60+8100', price: 2890, group: 'Combo' }, { name: '8425 UC', subtext: '325+8100', price: 3000, group: 'Combo' }, { name: '8760 UC', subtext: '660+8100', price: 3150, group: 'Combo' }, { name: '9900 UC', subtext: '1800+8100', price: 3590, group: 'Combo' }, { name: '11950 UC', subtext: '3850+8100', price: 4290, group: 'Combo' },
+                { name: 'Prime 1 เดือน', price: 35, group: 'Special' }, { name: 'Prime 3 เดือน', price: 95, group: 'Special' }, { name: 'Prime 6 เดือน', price: 185, group: 'Special' }, { name: 'Prime 12 เดือน', price: 379, group: 'Special' }, { name: 'Prime Plus 1 เดือน', price: 310, group: 'Special' }, { name: 'Prime Plus 3 เดือน', price: 870, group: 'Special' }, { name: 'Prime Plus 6 เดือน', price: 1735, group: 'Special' }, { name: 'Prime Plus 12 เดือน', price: 3450, group: 'Special' }, { name: 'Weekly Mythic', price: 130, group: 'Special' }, { name: 'Weekly Deal 2', price: 130, group: 'Special' }, { name: 'Weekly Deal 1', price: 45, group: 'Special' }
+            ]},
+            { id: '17', name: 'PUBG Mobile ID ต่างประเทศ', shortName: 'PUBG ID (Global)', description: 'เติม UC สำหรับไอดีต่างประเทศ', imageUrl: 'https://img2.pic.in.th/pic/1000034491.jpg', category: 'เติมเกม', packages: [
+                { name: '60 UC', price: 32, group: 'เลือกแพคเกจ' }, { name: '325 UC', price: 148, group: 'เลือกแพคเกจ' }, { name: '660 UC', price: 298, group: 'เลือกแพคเกจ' }, { name: '1800 UC', price: 735, group: 'เลือกแพคเกจ' }, { name: '3850 UC', price: 1445, group: 'เลือกแพคเกจ' }, { name: '8100 UC', price: 2870, group: 'เลือกแพคเกจ' }
+            ]},
+            { id: '18', name: 'Mobile Legends TH', shortName: 'Mobile Legends', description: 'เติมเพชร Mobile Legends ราคาคุ้มค่า', imageUrl: 'https://i.pinimg.com/236x/3a/4a/08/3a4a087dd396f3ba674c60ca46bd1ee1.jpg', category: 'เติมเกม', packages: [
+                { name: '50+5 Diamonds', subtext: '(เติมครั้งแรกได้โบนัส 50 ตามในเกม)', price: 25, group: 'แพคเติมครั้งแรก' }, { name: '150+15 Diamonds', subtext: '(เติมครั้งแรกได้โบนัส 150 ตามในเกม)', price: 73, group: 'แพคเติมครั้งแรก' }, { name: '250+25 Diamonds', subtext: '(เติมครั้งแรกได้โบนัส 250 ตามในเกม)', price: 122, group: 'แพคเติมครั้งแรก' }, { name: '500+65 Diamonds', subtext: '(เติมครั้งแรกได้โบนัส 500 ตามในเกม)', price: 239, group: 'แพคเติมครั้งแรก' },
+                { name: '86 Diamonds', subtext: '( 78+8 )', price: 40, group: 'แพคเกจปกติ' }, { name: '172 Diamonds', subtext: '( 156+16 )', price: 76, group: 'แพคเกจปกติ' }, { name: '257 Diamonds', subtext: '( 234+23 )', price: 111, group: 'แพคเกจปกติ' }, { name: '344 Diamonds', subtext: '( 156+16*2 )', price: 153, group: 'แพคเกจปกติ' }, { name: '429 Diamonds', subtext: '( 257+172 )', price: 187, group: 'แพคเกจปกติ' }, { name: '514 Diamonds', subtext: '( 234+23*2 )', price: 222, group: 'แพคเกจปกติ' }, { name: '600 Diamonds', subtext: '( 514+86 )', price: 263, group: 'แพคเกจปกติ' }, { name: '706 Diamonds', subtext: '( 625+81 )', price: 302, group: 'แพคเกจปกติ' }, { name: '792 Diamonds', subtext: '( 706+86 )', price: 346, group: 'แพคเกจปกติ' }, { name: '963 Diamonds', subtext: '( 706+257 )', price: 417, group: 'แพคเกจปกติ' }, { name: '1412 Diamonds', subtext: '( 706*2 )', price: 605, group: 'แพคเกจปกติ' }, { name: '2195 Diamonds', subtext: '( 1860+335 )', price: 908, group: 'แพคเกจปกติ' }, { name: '2901 Diamonds', subtext: '( 2195+706 )', price: 1213, group: 'แพคเกจปกติ' }, { name: '3688 Diamonds', subtext: '( 3099+589 )', price: 1497, group: 'แพคเกจปกติ' }, { name: '4394 Diamonds', subtext: '( 3688+706 )', price: 1801, group: 'แพคเกจปกติ' }, { name: '5532 Diamonds', subtext: '( 4649+883 )', price: 2252, group: 'แพคเกจปกติ' }, { name: '6238 Diamonds', subtext: '( 5532+706 )', price: 2555, group: 'แพคเกจปกติ' }, { name: '7376 Diamonds', subtext: '( 3688+3688 )', price: 3004, group: 'แพคเกจปกติ' }, { name: '7727 Diamonds', subtext: '( 5532+2195 )', price: 3163, group: 'แพคเกจปกติ' }, { name: '9288 Diamonds', subtext: '( 7740+1548 )', price: 3724, group: 'แพคเกจปกติ' },
+                { name: 'Twilight Pass', price: 253, group: 'แพคเกจพิเศษ' }, { name: 'One time Weekly', price: 48, group: 'แพคเกจพิเศษ' }
+            ]},
+            { id: '19', name: 'Seven Knights Re:BIRTH', shortName: 'Seven Knights RB', description: 'เติม Prism Seven Knights Re:BIRTH คุ้มค่า', imageUrl: 'https://static.sooplive.com/image/category/05ygzReb.webp', category: 'เติมเกม', packages: [
+                { name: '27 ปริซึม', price: 62, group: 'เลือกแพคเกจ' }, { name: '109 ปริซึม', price: 260, group: 'เลือกแพคเกจ' }, { name: '273 ปริซึม', price: 630, group: 'เลือกแพคเกจ' }, { name: '409 ปริซึม', price: 935, group: 'เลือกแพคเกจ' }, { name: '718 ปริซึม', price: 1520, group: 'เลือกแพคเกจ' }, { name: '990 ปริซึม', price: 2090, group: 'เลือกแพคเกจ' }
+            ]},
+            { id: '20', name: 'Dragon Nest M Classic', shortName: 'Dragon Nest M', description: 'เติม Cash Pack สุดคุ้ม', imageUrl: 'https://kaleoz-media.seagmcdn.com/kaleoz-store/202507/oss-3110deb285545986b7509ce2700f9754.jpg?x-oss-process=image/format,webp', category: 'เติมเกม', packages: [
+                { name: '600+26 Cash Pack', price: 27, group: 'Cash Pack' }, { name: '3000+130 Cash Pack', price: 132, group: 'Cash Pack' }, { name: '6000+366 Cash Pack', price: 270, group: 'Cash Pack' }, { name: '12000+800 Cash Pack', price: 530, group: 'Cash Pack' }, { name: '18000+1500 Cash Pack', price: 790, group: 'Cash Pack' }, { name: '30000+2900 Cash Pack', price: 1295, group: 'Cash Pack' }, { name: '60000+6000 Cash Pack', price: 2580, group: 'Cash Pack' }, { name: '120000+12000 Cash Pack', price: 5110, group: 'Cash Pack' }, { name: '180000+18000 Cash Pack', price: 7630, group: 'Cash Pack' }, { name: '240000+24000 Cash Pack', price: 10110, group: 'Cash Pack' }, { name: '300000+30000 Cash Pack', price: 12510, group: 'Cash Pack' }
+            ]},
+            { id: '21', name: 'Ghost Soul M', shortName: 'Ghost Soul M', description: 'เติมเพชรแดงและทอง', imageUrl: 'https://indexgame.in.th/storage/images/game/1760504460_68ef2a8c9c064.webp', category: 'เติมเกม', packages: [
+                { name: 'เพชรแดง 150+15', price: 75, group: 'เพชรแดง' }, { name: 'เพชรแดง 250+25', price: 122, group: 'เพชรแดง' }, { name: 'เพชรแดง 500+50', price: 240, group: 'เพชรแดง' }, { name: 'เพชรแดง 1,000+100', price: 475, group: 'เพชรแดง' }, { name: 'เพชรแดง 2,000+200', price: 935, group: 'เพชรแดง' }, { name: 'เพชรแดง 5,000+500', price: 2350, group: 'เพชรแดง' },
+                { name: 'ทอง 120,000', price: 37, group: 'ทอง' }, { name: 'ทอง 600,000', price: 165, group: 'ทอง' }, { name: 'ทอง 1,200,000', price: 308, group: 'ทอง' }, { name: 'ทอง 2,400,000', price: 508, group: 'ทอง' }
+            ]},
+            { id: '22', name: 'NBA Infinite', shortName: 'NBA Infinite', description: 'เติม IC และ Diamonds', imageUrl: 'https://yt3.googleusercontent.com/fgHSohHTqbwzmBrCcMO5gYm75VZMqyoJBdaWPIEyJ1Jw3OJKxOLw3Zwbbl-A1papFiUVx6WHejo=s900-c-k-c0x00ffffff-no-rj', category: 'เติมเกม', packages: [
+                { name: '100 IC + 30 Diamonds', price: 39, group: 'IC + Diamonds' }, { name: '200 IC + 60 Diamonds', price: 75, group: 'IC + Diamonds' }, { name: '500 IC + 150 Diamonds', price: 179, group: 'IC + Diamonds' }, { name: '1000 IC + 300 Diamonds', price: 339, group: 'IC + Diamonds' }, { name: '2000 IC + 600 Diamonds', price: 649, group: 'IC + Diamonds' }, { name: '3000 IC + 900 Diamonds', price: 969, group: 'IC + Diamonds' }, { name: '5000 IC + 1500 Diamonds', price: 1629, group: 'IC + Diamonds' }, { name: '10000 IC + 3000 Diamonds', price: 3199, group: 'IC + Diamonds' }
+            ]},
+            { id: '23', name: 'EA Sports FC Mobile', shortName: 'FC Mobile', description: 'เติม FC Points และ Silver', imageUrl: 'https://play-lh.googleusercontent.com/yQHb1bk88ENXLZ2_ZO-st7cuG78pva5yRAge2CjhBPoBoEng1ouxyx30vK4s4Z7553Kohd9pPVm1GC2Phs8slA', category: 'เติมเกม', packages: [
+                { name: '40 FC Points', price: 15, group: 'FC Points' }, { name: '100 FC Points', price: 34, group: 'FC Points' }, { name: '520 FC Points', price: 175, group: 'FC Points' }, { name: '1070 FC Points', price: 335, group: 'FC Points' }, { name: '2200 FC Points', price: 709, group: 'FC Points' }, { name: '5750 FC Points', price: 1745, group: 'FC Points' }, { name: '12000 FC Points', price: 3545, group: 'FC Points' },
+                { name: '39 Silver', price: 15, group: 'Silver' }, { name: '99 Silver', price: 34, group: 'Silver' }, { name: '499 Silver', price: 175, group: 'Silver' }, { name: '999 Silver', price: 335, group: 'Silver' }, { name: '1999 Silver', price: 705, group: 'Silver' }, { name: '4999 Silver', price: 1745, group: 'Silver' }, { name: '9999 Silver', price: 3545, group: 'Silver' }
+            ]},
+            { id: '7', name: 'Steam Wallet (THB)', shortName: 'Steam Wallet (THB)', description: 'เติมเงิน Steam Wallet (THB)', imageUrl: 'https://img5.pic.in.th/file/secure-sv1/1000034493.jpg', category: 'บัตรเติมเกม', packages: [
+                { name: 'Steam Wallet 50 THB', price: 49, group: 'เลือกแพคเกจ' }, { name: 'Steam Wallet 75 THB', price: 74, group: 'เลือกแพคเกจ' }, { name: 'Steam Wallet 100 THB', price: 98, group: 'เลือกแพคเกจ' }, { name: 'Steam Wallet 200 THB', price: 196, group: 'เลือกแพคเกจ' }, { name: 'Steam Wallet 250 THB', price: 245, group: 'เลือกแพคเกจ' }, { name: 'Steam Wallet 350 THB', price: 343, group: 'เลือกแพคเกจ' }, { name: 'Steam Wallet 750 THB', price: 735, group: 'เลือกแพคเกจ' }, { name: 'Steam Wallet 1000 THB', price: 980, group: 'เลือกแพคเกจ' }, { name: 'Steam Wallet 1500 THB', price: 1470, group: 'เลือกแพคเกจ' }, { name: 'Steam Wallet 2000 THB', price: 1960, group: 'เลือกแพคเกจ' }
+            ]},
+            { id: '8', name: 'Razer PIN (ไทย)', shortName: 'Razer PIN (ไทย)', description: 'บัตรเติมเงิน Razer PIN (THB)', imageUrl: 'https://livecards.net/_pl/75823.jpg', category: 'บัตรเติมเกม', packages: [
+                { name: '50 THB', price: 48 }, { name: '100 THB', price: 96 }, { name: '300 THB', price: 282 }, { name: '500 THB', price: 470 }, { name: '1,000 THB', price: 935 }, { name: '3,500 THB', price: 3255 }, { name: '5,000 THB', price: 4640 }
+            ]},
+            { id: '9', name: 'Riot Cash Card', shortName: 'Riot Cash Card', description: 'บัตรเติมเกมค่าย Riot (Valorant, LoL)', imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRIyidsmMd9yQ0y4FP-BUwK0jqLf5O7Zb92lunih4tM4SJ1stqH2SO8KeZ8&s=10', category: 'บัตรเติมเกม', packages: [
+                { name: 'Riot Cash 139 บาท', price: 133, group: 'เลือกแพคเกจ' }, { name: 'Riot Cash 279 บาท', price: 274, group: 'เลือกแพคเกจ' }, { name: 'Riot Cash 559 บาท', price: 548, group: 'เลือกแพคเกจ' }, { name: 'Riot Cash 979 บาท', price: 960, group: 'เลือกแพคเกจ' }, { name: 'Riot Cash 1400 บาท', price: 1330, group: 'เลือกแพคเกจ' }, { name: 'Riot Cash 2800 บาท', price: 2680, group: 'เลือกแพคเกจ' }
+            ]},
+            { id: '10', name: 'Roblox Gift Card TH', shortName: 'Roblox Gift Card TH', description: 'บัตรเติม Robux (สำหรับ ID ไทย)', imageUrl: 'https://img2.pic.in.th/pic/1000034504.png', category: 'บัตรเติมเกม', packages: [
+                { name: 'ราคาหน้าบัตร Roblox Card 300 THB', price: 294, group: 'เลือกแพคเกจ' }, { name: 'ราคาหน้าบัตร Roblox Card 750 THB', price: 735, group: 'เลือกแพคเกจ' }
+            ]},
+            { id: '11', name: 'Roblox Gift Card US', shortName: 'Roblox Gift Card US', description: 'บัตรเติม Robux (สำหรับ ID US)', imageUrl: 'https://img5.pic.in.th/file/secure-sv1/1000034505.png', category: 'บัตรเติมเกม', packages: [
+                { name: 'Roblox Card 10 USD', subtext: 'เติมได้เฉพาะสกุล US', price: 330, group: 'เลือกแพคเกจ' }, { name: 'Roblox Card 25 USD', subtext: 'เติมได้เฉพาะสกุล US', price: 825, group: 'เลือกแพคเกจ' }, { name: 'Roblox Card 50 USD', subtext: 'เติมได้เฉพาะสกุล US', price: 1650, group: 'เลือกแพคเกจ' }
+            ]},
+            { id: '12', name: 'True Money', shortName: 'True Money', description: 'บัตรเติมเงิน True Money', imageUrl: 'https://img5.pic.in.th/file/secure-sv1/1000034507.png', category: 'บัตรเติมเกม', packages: [
+                { name: '50 THB', price: 50 }, { name: '90 THB', price: 90 }, { name: '150 THB', price: 150 }, { name: '300 THB', price: 300 }, { name: '500 THB', price: 500 }, { name: '1,000 THB', price: 1000 }
+            ]},
+            { id: '13', name: 'Line prepaid Card', shortName: 'Line prepaid Card', description: 'บัตรเติมเงิน Line (THB)', imageUrl: 'https://img5.pic.in.th/file/secure-sv1/1000034511.jpg', category: 'บัตรกำนัล', packages: [
+                { name: '100 THB', price: 100, group: 'เลือกแพคเกจ' }, { name: '300 THB', price: 300, group: 'เลือกแพคเกจ' }, { name: '500 THB', price: 500, group: 'เลือกแพคเกจ' }
+            ]},
+            { id: '14', name: 'Bigo Live', shortName: 'Bigo Live', description: 'เติมเพชร Bigo Live', imageUrl: 'https://yt3.googleusercontent.com/NIdNDBxcjtcjRzrmJGWoQ_3fqY3a2RWbwRA3Kfv9ytGHiP1RDEzdY07BiZek53NXxsvnZuirROo=s900-c-k-c0x00ffffff-no-rj', category: 'บัตรกำนัล', packages: [
+                { name: 'Bigo Live 55 Diamonds', price: 42, group: 'เลือกแพคเกจ' }, { name: 'Bigo Live 100 Diamonds', price: 78, group: 'เลือกแพคเกจ' }, { name: 'Bigo Live 200 Diamonds', price: 155, group: 'เลือกแพคเกจ' }, { name: 'Bigo Live 500 Diamonds', price: 380, group: 'เลือกแพคเกจ' }
+            ]},
+            { id: '15', name: 'Tinder Plus', shortName: 'Tinder Plus', description: 'สมัครสมาชิก Tinder Plus', imageUrl: 'https://production-gameflipusercontent.fingershock.com/us-east-1:f8bc01e2-124a-4cbd-af0b-6a966cc12876/3bc91632-e8c4-4c76-bcad-e62a2a2975d9/424fdeeb-bdae-49d8-b603-1519003b63b3/640x640.webp', category: 'บัตรกำนัล', packages: [
+                { name: '1 เดือน', price: 189, group: 'เลือกแพคเกจ' }
+            ]},
+            { id: '16', name: 'Tinder Gold', shortName: 'Tinder Gold', description: 'อัปเกรดเป็น Tinder Gold', imageUrl: 'https://livecards.net/_pi/75982.jpg?v=1', category: 'บัตรกำนัล', packages: [
+                { name: '1 เดือน', price: 299, group: 'เลือกแพคเกจ' }
+            ]}
+        ];
+
+        // ========================
+        // 2. LOGIC
+        // ========================
+        let currentCategory = 'all';
+        let homeScrollY = 0;
+        let toastTimeout;
+
+        window.addEventListener('load', () => {
+            const loader = document.getElementById('loader');
+            // Hide Loader
+            setTimeout(() => {
+                loader.style.opacity = '0';
+                setTimeout(() => {
+                    loader.style.display = 'none';
+                    // Check URL after loader is gone
+                    checkDeepLink();
+                }, 300);
+            }, 500);
+        });
+
+        // Scroll Top
+        window.addEventListener('scroll', () => {
+            const btn = document.getElementById('back-to-top');
+            if (window.scrollY > 300) btn.classList.remove('opacity-0', 'translate-y-10', 'pointer-events-none');
+            else btn.classList.add('opacity-0', 'translate-y-10', 'pointer-events-none');
+        });
+
+        function checkDeepLink() {
+            try {
+                const urlParams = new URLSearchParams(window.location.search);
+                const gameId = urlParams.get('game');
+                if (gameId) showDetail(gameId, false);
+            } catch (e) { console.log('Deep link check skipped'); }
+        }
+
+        function createProductCardHTML(p, index) {
+            const delay = Math.min(index * 0.05, 0.5);
+            return `
+            <div class="group relative bg-white rounded-xl md:rounded-[20px] overflow-hidden cursor-pointer shadow-sm hover:shadow-lg transition-all duration-300 animate-[slideUp_0.4s_ease-out_forwards] border border-gray-100" 
+                 style="animation-delay: ${delay}s" onclick="showDetail('${p.id}')">
+                
+                <div class="relative w-full aspect-square bg-brown-light/20 p-2 md:p-4 flex items-center justify-center overflow-hidden">
+                    <img src="${p.imageUrl}" loading="lazy" onerror="this.src='https://placehold.co/200x200/F4ECE4/8B4513?text=${p.shortName}'" 
+                         class="w-full h-full object-contain relative z-0 group-hover:scale-110 transition-transform duration-500 drop-shadow-sm">
+                </div>
+                
+                <div class="p-1.5 md:p-3 text-center bg-white relative z-10">
+                    <h3 class="text-[10px] md:text-sm font-bold text-gray-800 leading-tight mb-0.5 md:mb-1 group-hover:text-primary transition-colors line-clamp-1">${p.shortName}</h3>
+                    <p class="hidden md:block text-[10px] text-gray-400 line-clamp-1">${p.description}</p>
+                </div>
+            </div>`;
+        }
+
+        function createPackageCardHTML(pkg, productId) {
+            const pkgData = JSON.stringify(pkg).replace(/"/g, '&quot;');
+            return `
+            <div onclick="openOrderModal(this, '${productId}')" data-pkg="${pkgData}" 
+                 class="relative bg-white border border-gray-100 rounded-xl p-3 md:p-4 flex justify-between items-center cursor-pointer group hover:border-primary/50 hover:bg-orange-50/30 transition-all duration-200 active:scale-[0.98]">
+                <div class="flex flex-col relative z-10 pr-2">
+                    <span class="font-bold text-gray-700 text-sm md:text-base group-hover:text-primary transition-colors">${pkg.name}</span>
+                    ${pkg.subtext ? `<span class="text-[10px] md:text-xs text-gray-400 font-normal mt-0.5">${pkg.subtext}</span>` : ''}
+                </div>
+                <div class="relative z-10 flex flex-col items-end shrink-0">
+                    <span class="font-bold text-white bg-primary px-3 py-1.5 rounded-lg text-sm shadow-sm md:text-base">฿${pkg.price.toLocaleString()}</span>
+                </div>
+            </div>`;
+        }
+
+        function getExtraInfoHTML(productId) {
+            if (productId !== '19') return '';
+            return `<div class="mb-4 bg-orange-50 rounded-xl p-4 border border-orange-100 text-xs text-gray-600"><p class="font-bold text-primary mb-2">วิธีซื้อ:</p>1. ไปที่ <a href="https://skre-shop.netmarble.com/th" class="text-blue-500 underline" target="_blank">skre-shop</a><br>2. ล็อกอิน > เลือกแพ็ก > กดชำระเงิน<br>3. เลือก Razer Gold > คัดลอก URL สรุปมาส่ง</div>`;
+        }
+
+        function renderProducts(filterText = '') {
+            const gridContainer = document.getElementById('product-grid');
+            gridContainer.innerHTML = '';
+            
+            const allCategories = ['เติมเกม', 'บัตรเติมเกม', 'บัตรกำนัล'];
+            const categoriesToRender = (currentCategory === 'all') ? allCategories : [currentCategory];
+            let hasAnyProduct = false;
+
+            categoriesToRender.forEach(catName => {
+                let items = products.filter(p => p.category === catName);
+                if (filterText) items = items.filter(p => p.name.toLowerCase().includes(filterText) || p.shortName.toLowerCase().includes(filterText));
+
+                if (items.length > 0) {
+                    hasAnyProduct = true;
+                    const section = document.createElement('div');
+                    section.className = 'w-full animate-[slideUp_0.4s_ease-out_forwards]';
+                    
+                    const headerHtml = `<div class="flex items-center gap-2 mb-2 pl-1"><div class="w-1 h-5 rounded-full bg-primary"></div><h2 class="text-sm font-bold text-primary">${catName}</h2></div>`;
+                    const gridHtml = `<div class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 md:gap-5">${items.map((p, index) => createProductCardHTML(p, index)).join('')}</div>`;
+
+                    section.innerHTML = headerHtml + gridHtml;
+                    gridContainer.appendChild(section);
+                }
+            });
+
+            if (!hasAnyProduct) {
+                gridContainer.innerHTML = `<div class="py-10 text-center opacity-60 text-sm text-gray-500">ไม่พบสินค้า</div>`;
+            }
+        }
+
+        function showDetail(id, pushHistory = true) {
+            homeScrollY = window.scrollY;
+            const p = products.find(i => i.id === id);
+            if (!p) return;
+
+            // UPDATE PAGE TITLE (SEO)
+            document.title = `${p.name} | Kapii Chan`;
+
+            if (pushHistory) {
+                try {
+                    const newUrl = window.location.pathname + '?game=' + id;
+                    window.history.pushState({path: newUrl}, '', newUrl);
+                } catch (e) { /* Ignore file:// error */ }
+            }
+
+            const groups = {};
+            p.packages.forEach(pkg => {
+                const g = pkg.group || 'ทั่วไป';
+                if (!groups[g]) groups[g] = [];
+                groups[g].push(pkg);
+            });
+
+            let contentHtml = Object.entries(groups).map(([gName, pkgs]) => {
+                return `
+                <div class="mb-4 animate-[slideUp_0.3s_ease-out_forwards]">
+                    <h3 class="text-sm font-bold text-gray-700 mb-2 pl-1">${gName}</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                        ${pkgs.map(pkg => createPackageCardHTML(pkg, p.id)).join('')}
+                    </div>
+                </div>`;
+            }).join('');
+            
+            document.getElementById('page-detail').innerHTML = `
+                <div class="sticky top-0 z-30 bg-white/95 backdrop-blur-xl border-b border-gray-100 px-4 py-3 flex items-center justify-between shadow-sm">
+                    <div class="flex items-center gap-2">
+                        <img src="${p.imageUrl}" onerror="this.src='https://placehold.co/100x100?text=Icon'" class="w-8 h-8 rounded-lg object-contain bg-gray-50 border border-gray-100">
+                        <h1 class="text-sm font-bold text-gray-800 line-clamp-1">${p.name}</h1>
+                    </div>
+                    <button onclick="showPage('home')" class="p-1.5 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"><svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg></button>
+                </div>
+                <div class="bg-gray-50/50 min-h-screen pt-4"><div class="container mx-auto max-w-3xl px-3">${getExtraInfoHTML(p.id)}${contentHtml}</div></div>`;
+            
+            showPage('detail');
+        }
+
+        function showPage(page) {
+            const home = document.getElementById('page-home');
+            const detail = document.getElementById('page-detail');
+            const navBtn = document.getElementById('nav-home-btn');
+            const navCats = document.getElementById('nav-categories');
+
+            if (page === 'home') {
+                try { window.history.pushState({}, '', window.location.pathname); } catch(e){}
+                
+                document.title = 'Kapii Chan - บริการเติมเกม 24 ชม.';
+                window.scrollTo({ top: homeScrollY, behavior: 'auto' }); 
+                detail.classList.remove('active');
+                home.classList.add('active'); 
+                
+                navBtn.classList.add('hidden');
+                navCats.classList.remove('hidden');
+            } else {
+                window.scrollTo(0,0);
+                home.classList.remove('active');
+                detail.classList.add('active');
+                
+                navBtn.classList.remove('hidden');
+                navCats.classList.add('hidden');
+            }
+        }
+
+        // --- Toast Function ---
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            const m = document.getElementById('toast-msg');
+            m.innerText = msg;
+            
+            t.classList.remove('opacity-0', 'pointer-events-none');
+            t.classList.add('animate-toast-in');
+            
+            if(toastTimeout) clearTimeout(toastTimeout);
+            
+            toastTimeout = setTimeout(() => {
+                t.classList.remove('animate-toast-in');
+                t.classList.add('animate-toast-out');
+                setTimeout(() => {
+                    t.classList.add('opacity-0', 'pointer-events-none');
+                    t.classList.remove('animate-toast-out');
+                }, 300);
+            }, 3000);
+        }
+
+        // --- Modals ---
+        function openOrderModal(el, pid) {
+            const pkg = JSON.parse(el.dataset.pkg);
+            const p = products.find(i => i.id === pid);
+            document.getElementById('order-text').value = `🛒 สั่งซื้อ: ${p.name}\n📦 แพ็กเกจ: ${pkg.name}\n💰 ราคา: ${pkg.price.toLocaleString()} บาท\n----------------\n(ใส่ ID/ชื่อตัวละคร ตรงนี้)`;
+            
+            const modal = document.getElementById('order-modal');
+            const content = document.getElementById('modal-content');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            setTimeout(() => {
+                content.classList.remove('translate-y-full');
+            }, 10);
+        }
+
+        function closeOrderModal() {
+            const modal = document.getElementById('order-modal');
+            const content = document.getElementById('modal-content');
+            content.classList.add('translate-y-full');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }, 300);
+        }
+
+        function copyOrderOnly() {
+            const t = document.getElementById("order-text");
+            t.select(); t.setSelectionRange(0,99999);
+            document.execCommand('copy');
+            showToast('คัดลอกรายละเอียดแล้ว!');
+        }
+        
+        function copyBankNum() {
+             const dummy = document.createElement("textarea");
+             dummy.value = '2191169185';
+             document.body.appendChild(dummy);
+             dummy.select();
+             document.execCommand('copy');
+             document.body.removeChild(dummy);
+             showToast('คัดลอกเลขบัญชีแล้ว: 219-116-9185');
+        }
+
+        function copyOrderAndRedirect(platform) {
+            const t = document.getElementById("order-text");
+            t.select(); t.setSelectionRange(0,99999);
+            // Try copy but don't block redirect if fails
+            try { document.execCommand('copy'); } catch(e){}
+            
+            closeOrderModal();
+            showToast('คัดลอกแล้ว กำลังเปิดแอป...');
+            
+            // Direct link opening - Updated to use window.open for new tab/app behavior
+            const link = platform === 'line' ? 'https://line.me/R/ti/p/@KapiiChan' : 'https://www.facebook.com/share/1BrAwkaah7/';
+            setTimeout(() => { window.open(link, '_blank'); }, 300);
+        }
+
+        function resetSearch() {
+            document.getElementById('search-input').value = '';
+            document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+            document.querySelector('.cat-btn[data-cat="all"]').classList.add('active');
+            currentCategory = 'all';
+            renderProducts();
+        }
+
+        function toggleContactMenu() {
+            const m = document.getElementById('contact-menu');
+            const o = document.getElementById('contact-icon-open');
+            const c = document.getElementById('contact-icon-close');
+            if(m.classList.contains('invisible')) {
+                m.classList.remove('opacity-0', 'translate-y-8', 'invisible', 'pointer-events-none');
+                o.classList.add('opacity-0', '-rotate-90'); c.classList.remove('opacity-0', 'rotate-90');
+            } else {
+                m.classList.add('opacity-0', 'translate-y-8', 'invisible', 'pointer-events-none');
+                o.classList.remove('opacity-0', '-rotate-90'); c.classList.add('opacity-0', 'rotate-90');
+            }
+        }
+
+        // Init
+        document.addEventListener('DOMContentLoaded', () => {
+            renderProducts();
+            document.getElementById('search-input').addEventListener('input', (e) => renderProducts(e.target.value.toLowerCase()));
+            const btns = document.querySelectorAll('.cat-btn');
+            btns.forEach(btn => btn.addEventListener('click', () => {
+                btns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentCategory = btn.dataset.cat;
+                renderProducts(document.getElementById('search-input').value.toLowerCase());
+            }));
+        });
+    </script>
+</body>
+</html>
