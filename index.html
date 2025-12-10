@@ -3,9 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kapii Chan - บริการเติมเกม 24 ชม.</title>
     
-    <!-- Tailwind CSS -->
+    <title>Kapii Chan - บริการเติมเกม 24 ชม. | kapiichan.com</title>
+    <meta name="description" content="ร้านเติมเกม Kapii Chan บริการเติม RoV, Free Fire, Valorant และเกมดังอีกมากมาย ราคาถูก ปลอดภัย จดทะเบียนพาณิชย์ถูกต้อง">
+    <meta name="keywords" content="เติมเกม, เติม RoV, Valorant Points, Free Fire, Kapii Chan, ร้านเติมเกมคาปิบาร่า">
+    <meta property="og:title" content="Kapii Chan - บริการเติมเกม 24 ชม.">
+    <meta property="og:url" content="https://kapiichan.com/">
+    <meta property="og:image" content="https://i.postimg.cc/wvhQLHFD/Untitled_3.png">
+    <meta property="og:type" content="website">
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
@@ -59,20 +65,17 @@
 </head>
 <body class="text-gray-700 h-full overflow-x-hidden selection:bg-primary selection:text-white relative">
 
-    <!-- Toast Notification -->
     <div id="toast" class="fixed top-6 left-1/2 -translate-x-1/2 bg-gray-800/90 text-white px-6 py-2.5 rounded-full shadow-xl opacity-0 pointer-events-none z-[100] text-sm font-medium transition-all backdrop-blur-sm flex items-center gap-2">
         <svg class="w-4 h-4 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
         <span id="toast-msg">แจ้งเตือน</span>
     </div>
 
-    <!-- Loading Screen -->
     <div id="loader" class="fixed inset-0 z-[100] bg-[#FDFBF7] flex flex-col items-center justify-center opacity-100 pointer-events-auto">
         <div class="w-10 h-10 border-4 border-gray-200 border-t-primary rounded-full animate-spin mb-4"></div>
         <p class="text-primary font-bold animate-pulse">กำลังโหลด...</p>
     </div>
 
-    <!-- HOME PAGE -->
-    <div id="page-home" class="page active min-h-screen pb-32">
+    <div id="page-home" class="page active min-h-screen">
         <header class="relative pt-8 pb-4 px-4 mb-2">
             <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-white to-[#FFFDF9] rounded-b-[40px] shadow-sm -z-10"></div>
             
@@ -90,7 +93,6 @@
                     <p class="text-secondary/80 text-xs font-medium">ร้านเติมเกมคาปิบาร่า เพื่อนซี้เกมเมอร์</p>
                 </div>
                 
-                <!-- Trust Badges -->
                 <div class="flex justify-center gap-2 mt-4 mb-2 overflow-x-auto hide-scroll px-2">
                     <div class="flex items-center gap-1 bg-white/80 px-2 py-1 rounded-lg border border-gray-100 shadow-sm shrink-0">
                         <svg class="w-3 h-3 text-success" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
@@ -106,7 +108,6 @@
                     </div>
                 </div>
 
-                <!-- Search -->
                 <div class="mt-2 relative max-w-sm mx-auto">
                     <div class="relative bg-white rounded-xl flex items-center shadow-sm p-1 border border-gray-100">
                         <div class="pl-3 text-accent"><svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg></div>
@@ -117,18 +118,33 @@
         </header>
 
         <main class="container mx-auto max-w-7xl px-3">
-            <div id="product-grid" class="flex flex-col gap-6 pb-10">
-                <!-- JS Will Populate -->
-            </div>
+            <div id="product-grid" class="flex flex-col gap-6">
+                </div>
         </main>
+
+        <footer class="bg-white border-t border-gray-100 pt-8 pb-32 mt-12 rounded-t-[30px]">
+            <div class="container mx-auto max-w-xl px-6 text-center">
+                <div class="mb-4">
+                     <h3 class="text-primary font-bold text-lg">Kapii Chan</h3>
+                     <p class="text-xs text-gray-400">ร้านค้าจดทะเบียนพาณิชย์อิเล็กทรอนิกส์ (DBD Registered)</p>
+                </div>
+                <div class="text-[10px] text-gray-500 space-y-1 mb-6">
+                    <p>42 หมู่ 15 ต.ต้นธงชัย อ.เมืองลำปาง จ.ลำปาง 52000</p>
+                    <p>Email: kapiichan.store@gmail.com</p>
+                    <p>Tel: 096-713-7055</p>
+                </div>
+                <div class="flex justify-center gap-4 opacity-50">
+                    <a href="https://line.me/R/ti/p/@KapiiChan" target="_blank"><img src="https://upload.wikimedia.org/wikipedia/commons/4/41/LINE_logo.svg" class="w-6 h-6 grayscale hover:grayscale-0 transition-all"></a>
+                    <a href="https://www.facebook.com/share/1BrAwkaah7/" target="_blank"><img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/2021_Facebook_icon.svg" class="w-6 h-6 grayscale hover:grayscale-0 transition-all"></a>
+                </div>
+                <p class="text-[10px] text-gray-300 mt-4">© 2025 Kapii Chan. All rights reserved.</p>
+            </div>
+        </footer>
     </div>
 
-    <!-- DETAIL PAGE -->
     <div id="page-detail" class="page min-h-screen bg-gray-50 pb-32">
-        <!-- JS Will Populate -->
-    </div>
+        </div>
 
-    <!-- ORDER MODAL -->
     <div id="order-modal" class="fixed inset-0 z-[60] hidden flex items-end md:items-center justify-center">
         <div class="absolute inset-0 modal-overlay transition-opacity" onclick="closeOrderModal()"></div>
         <div class="relative bg-white rounded-t-3xl md:rounded-3xl p-6 pt-2 w-full md:w-[400px] shadow-2xl transform transition-transform duration-300 translate-y-full md:translate-y-0" id="modal-content">
@@ -183,12 +199,10 @@
         </div>
     </div>
 
-    <!-- Back to Top -->
     <button id="back-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="fixed bottom-24 left-4 z-40 w-10 h-10 bg-white/90 backdrop-blur text-primary rounded-full shadow-lg border border-primary/10 flex items-center justify-center opacity-0 translate-y-10 transition-all duration-300 pointer-events-none">
         <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" /></svg>
     </button>
 
-    <!-- Floating Contact -->
     <div class="fixed bottom-24 right-4 z-40 flex flex-col items-end gap-3 group">
         <div id="contact-menu" class="flex flex-col gap-3 transition-all duration-300 opacity-0 translate-y-8 invisible pointer-events-none origin-bottom">
             <a href="https://line.me/R/ti/p/@KapiiChan" target="_blank" class="flex items-center gap-3 group/item hover:-translate-x-1 transition-transform"><span class="bg-white text-primary text-xs px-2 py-1 rounded shadow border border-primary/10">Line</span><div class="w-10 h-10 rounded-xl shadow bg-white p-1"><img src="https://upload.wikimedia.org/wikipedia/commons/4/41/LINE_logo.svg" class="w-full h-full object-contain"></div></a>
@@ -200,7 +214,6 @@
         </button>
     </div>
 
-    <!-- Bottom Nav -->
     <div class="fixed bottom-6 left-1/2 -translate-x-1/2 w-[95%] max-w-md z-40">
         <div class="glass-nav rounded-2xl px-1 py-1 shadow-2xl">
             <div class="flex justify-between items-center" id="nav-container">
@@ -361,7 +374,7 @@
         }
 
         function createPackageCardHTML(pkg, productId) {
-            const pkgData = JSON.stringify(pkg).replace(/"/g, '&quot;');
+            const pkgData = JSON.stringify(pkg).replace(/"/g, '"');
             return `
             <div onclick="openOrderModal(this, '${productId}')" data-pkg="${pkgData}" 
                  class="relative bg-white border border-gray-100 rounded-xl p-3 md:p-4 flex justify-between items-center cursor-pointer group hover:border-primary/50 hover:bg-orange-50/30 transition-all duration-200 active:scale-[0.98]">
@@ -594,7 +607,3 @@
     </script>
 </body>
 </html>
-
-
-
-
