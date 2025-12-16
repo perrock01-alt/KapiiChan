@@ -1,0 +1,1221 @@
+<!DOCTYPE html>
+<html lang="th" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Kapii Chan - เติมเกม 24 ชม. รวดเร็ว ปลอดภัย</title>
+    
+    <meta name="description" content="บริการเติมเกมออนไลน์ Valorant, RoV, Free Fire และอีกมากมาย ราคาถูก เครดิตแน่น เปิด 24 ชม.">
+    
+    <!-- Icons & Fonts -->
+    <!-- mc1 as Icon -->
+    <link rel="icon" type="image/png" href="https://i.postimg.cc/hGJxYZ2j/mc1.png">
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#8B4513',
+                        secondary: '#D2691E',
+                        accent: '#FF8C00',
+                        bg: '#FFFBF0',
+                    },
+                    fontFamily: { sans: ['Prompt', 'sans-serif'] },
+                    boxShadow: {
+                        'card': '0 4px 12px rgba(139, 69, 19, 0.08)',
+                        'float': '0 8px 30px rgba(139, 69, 19, 0.15)',
+                        'glow': '0 0 15px rgba(255, 140, 0, 0.3)',
+                    },
+                    animation: {
+                        'float': 'float 3s ease-in-out infinite',
+                        'fade-up': 'fadeUp 0.4s ease-out forwards',
+                        'marquee': 'marquee 30s linear infinite',
+                    },
+                    keyframes: {
+                        float: { '0%, 100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-5px)' } },
+                        fadeUp: { '0%': { opacity: 0, transform: 'translateY(10px)' }, '100%': { opacity: 1, transform: 'translateY(0)' } },
+                        marquee: { '0%': { transform: 'translateX(0)' }, '100%': { transform: 'translateX(-100%)' } }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body { background-color: #FFFBF0; -webkit-tap-highlight-color: transparent; scroll-behavior: smooth; }
+        
+        .hide-scroll::-webkit-scrollbar { display: none; }
+        .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        .glass { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+        
+        .tree-item {
+            display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 0.8rem;
+            border-radius: 0.75rem; font-size: 0.9rem; color: #4b5563;
+            cursor: pointer; transition: all 0.2s; user-select: none;
+        }
+        .tree-item:hover { background-color: #fff7ed; color: #8B4513; }
+        
+        .tree-item.active-menu { 
+            background-color: #8B4513 !important; 
+            color: white !important;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(139, 69, 19, 0.2);
+        }
+        .tree-item.active-menu i { color: white !important; }
+        .tree-item.active-menu .tree-arrow { color: rgba(255,255,255,0.7) !important; }
+
+        .tree-children {
+            max-height: 0; opacity: 0; overflow: hidden;
+            transition: max-height 0.3s ease, opacity 0.3s ease;
+            margin-left: 1rem; border-left: 2px solid #e5e7eb;
+        }
+        .tree-children.show { max-height: 1000px; opacity: 1; padding: 0.25rem 0; }
+        
+        .tree-arrow { transition: transform 0.3s; margin-left: auto; }
+        .tree-arrow.expanded { transform: rotate(90deg); }
+
+        .custom-checkbox {
+            appearance: none; width: 1.1em; height: 1.1em;
+            border: 2px solid #d1d5db; border-radius: 4px;
+            display: grid; place-content: center; margin-right: 0.5rem; cursor: pointer;
+        }
+        .custom-checkbox::before {
+            content: ""; width: 0.65em; height: 0.65em;
+            transform: scale(0); transition: 120ms transform ease-in-out;
+            box-shadow: inset 1em 1em white;
+            transform-origin: center; clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+        }
+        .custom-checkbox:checked { background-color: #8B4513; border-color: #8B4513; }
+        .custom-checkbox:checked::before { transform: scale(1); }
+
+        .page { display: none; opacity: 0; }
+        .page.active { display: block; opacity: 1; animation: fadeUp 0.3s forwards; }
+        
+        #page-home { display: block; opacity: 1; }
+
+        #sidebar { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .sidebar-closed { transform: translateX(-100%); }
+        .sidebar-open { transform: translateX(0); }
+        
+        .snap-x-mandatory { scroll-snap-type: x mandatory; }
+        .snap-center { scroll-snap-align: center; }
+        
+        body.modal-open { overflow: hidden; }
+        .animate-marquee { animation: marquee 35s linear infinite; }
+        .animate-marquee:hover { animation-play-state: paused; }
+
+        .safe-pb { padding-bottom: env(safe-area-inset-bottom); }
+
+        input[type="search"]::-webkit-search-decoration,
+        input[type="search"]::-webkit-search-cancel-button,
+        input[type="search"]::-webkit-search-results-button,
+        input[type="search"]::-webkit-search-results-decoration { display: none; }
+    </style>
+</head>
+<body class="text-gray-800 h-full overflow-x-hidden relative font-sans selection:bg-primary/20 bg-[#FFFBF0]">
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed top-6 left-1/2 -translate-x-1/2 bg-gray-900/90 backdrop-blur text-white px-5 py-3 rounded-full shadow-2xl opacity-0 pointer-events-none z-[110] text-sm flex items-center gap-2 transition-all transform scale-90">
+        <i class="ph-fill ph-check-circle text-green-400 text-lg"></i> <span id="toast-msg">แจ้งเตือน</span>
+    </div>
+
+    <!-- Credit Modal -->
+    <div id="credit-modal" class="fixed inset-0 z-[120] hidden flex justify-center items-center pointer-events-none">
+        <div class="bg-white/95 backdrop-blur-md px-8 py-6 rounded-2xl shadow-2xl transform scale-90 opacity-0 transition-all duration-300 flex flex-col items-center gap-3 border border-green-100" id="credit-content">
+            <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-1">
+                <i class="ph-fill ph-shield-check text-4xl text-green-500"></i>
+            </div>
+            <h3 class="text-lg font-bold text-gray-800">ร้านค้าปลอดภัย 100%</h3>
+            <div class="flex flex-col gap-2 text-xs text-gray-500 text-center">
+                <p><i class="ph-fill ph-check-circle text-green-500"></i> ลงทะเบียน DBD แล้ว</p>
+                <p><i class="ph-fill ph-check-circle text-green-500"></i> ส่งไวภายใน 5 นาที</p>
+                <p><i class="ph-fill ph-check-circle text-green-500"></i> รีวิวแน่น เครดิตดี</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar Overlay -->
+    <div id="sidebar-overlay" class="fixed inset-0 bg-black/40 z-[90] hidden transition-opacity opacity-0 backdrop-blur-[2px]" onclick="toggleSidebar()"></div>
+
+    <!-- Sidebar Menu -->
+    <div id="sidebar" class="fixed top-0 left-0 h-full w-[280px] bg-white z-[100] sidebar-closed shadow-2xl flex flex-col rounded-r-[30px]">
+        <div class="p-6 bg-gradient-to-br from-primary/10 to-orange-50 border-b border-primary/5 relative overflow-hidden">
+            <div class="absolute -top-10 -right-10 w-32 h-32 bg-primary/10 rounded-full blur-2xl"></div>
+            <div class="flex items-center gap-3 mb-4 relative z-10">
+                <div class="w-16 h-16 rounded-full bg-white p-1 shadow-md border-2 border-white ring-2 ring-primary/20">
+                    <!-- mc2 Avatar -->
+                    <img src="https://i.postimg.cc/mrcMnpmP/mc2.png" class="w-full h-full rounded-full object-cover bg-orange-50" onerror="this.src='https://placehold.co/100x100/orange/white?text=User'">
+                </div>
+                <div>
+                    <h3 class="font-bold text-gray-900 text-lg">ยินดีต้อนรับ</h3>
+                    <p class="text-xs text-gray-400 bg-white/60 px-2 py-0.5 rounded-full inline-block backdrop-blur-sm">ลูกค้าคนพิเศษ</p>
+                </div>
+            </div>
+            <button onclick="checkShopCredit()" class="w-full bg-[#00A950] text-white py-2.5 rounded-xl text-sm font-bold shadow-lg shadow-green-500/20 hover:bg-[#008f43] transition-all active:scale-95 relative z-10 flex items-center justify-center gap-2">
+                <i class="ph-bold ph-shield-check text-lg"></i> เช็คเครดิตร้าน
+            </button>
+        </div>
+        
+        <div class="flex-1 overflow-y-auto p-4 hide-scroll">
+            <div class="space-y-1">
+                <div onclick="selectMenu('home')" class="tree-item active-menu" id="menu-home">
+                    <i class="ph-bold ph-house text-xl"></i> 
+                    <span class="flex-1 font-medium">หน้าหลัก</span>
+                </div>
+
+                <div class="my-2 border-t border-gray-100"></div>
+                <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-2 ml-2">หมวดหมู่สินค้า</p>
+
+                <div>
+                    <div onclick="selectMenu('pc')" class="tree-item" id="menu-pc">
+                        <i class="ph-bold ph-desktop text-xl"></i>
+                        <span class="flex-1 font-medium">PC Games</span>
+                        <i class="ph-bold ph-caret-right tree-arrow" id="arrow-pc"></i>
+                    </div>
+                    <div class="tree-children" id="child-pc">
+                        <label class="tree-item text-sm pl-4 hover:bg-orange-50 cursor-pointer">
+                            <input type="checkbox" class="custom-checkbox" onchange="toggleGenre('FPS')"> FPS
+                        </label>
+                         <label class="tree-item text-sm pl-4 hover:bg-orange-50 cursor-pointer">
+                            <input type="checkbox" class="custom-checkbox" onchange="toggleGenre('Strategy')"> Strategy
+                        </label>
+                    </div>
+                </div>
+
+                <div>
+                    <div onclick="selectMenu('mobile')" class="tree-item mt-1" id="menu-mobile">
+                        <i class="ph-bold ph-device-mobile text-xl"></i>
+                        <span class="flex-1 font-medium">Mobile Games</span>
+                        <i class="ph-bold ph-caret-right tree-arrow" id="arrow-mobile"></i>
+                    </div>
+                    <div class="tree-children" id="child-mobile">
+                        <label class="tree-item text-sm pl-4 hover:bg-orange-50 cursor-pointer">
+                            <input type="checkbox" class="custom-checkbox" onchange="toggleGenre('MOBA')"> MOBA
+                        </label>
+                        <label class="tree-item text-sm pl-4 hover:bg-orange-50 cursor-pointer">
+                            <input type="checkbox" class="custom-checkbox" onchange="toggleGenre('FPS')"> FPS
+                        </label>
+                        <label class="tree-item text-sm pl-4 hover:bg-orange-50 cursor-pointer">
+                            <input type="checkbox" class="custom-checkbox" onchange="toggleGenre('RPG')"> RPG / MMORPG
+                        </label>
+                        <label class="tree-item text-sm pl-4 hover:bg-orange-50 cursor-pointer">
+                            <input type="checkbox" class="custom-checkbox" onchange="toggleGenre('Sport')"> Sport
+                        </label>
+                    </div>
+                </div>
+
+                <div onclick="selectMenu('card')" class="tree-item mt-1" id="menu-card">
+                    <i class="ph-bold ph-credit-card text-xl"></i>
+                    <span class="flex-1 font-medium">บัตรเติมเงิน</span>
+                </div>
+
+                <div onclick="selectMenu('voucher')" class="tree-item mt-1" id="menu-voucher">
+                    <i class="ph-bold ph-ticket text-xl"></i>
+                    <span class="flex-1 font-medium">วอเชอร์ & แอป</span>
+                </div>
+                
+                <div class="my-2 border-t border-gray-100"></div>
+                 <a href="https://line.me/R/ti/p/@KapiiChan" target="_blank" class="tree-item">
+                    <i class="ph-bold ph-chat-circle-dots text-xl"></i> <span class="font-medium flex-1">ติดต่อเรา</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN HOME PAGE -->
+    <div id="page-home" class="page active min-h-screen flex flex-col">
+        <header class="bg-white/90 backdrop-blur-md sticky top-0 z-30 shadow-nav rounded-b-[20px]">
+            <div class="flex items-center justify-between px-4 py-3">
+                <div class="flex items-center gap-3">
+                    <button onclick="toggleSidebar()" class="text-gray-600 hover:text-primary p-2 rounded-xl hover:bg-orange-50 active:scale-90 transition-all">
+                        <i class="ph-bold ph-list text-2xl"></i>
+                    </button>
+                    <div class="flex items-center gap-2 cursor-pointer" onclick="selectMenu('home'); window.scrollTo(0,0);">
+                        <!-- mc1 Icon -->
+                        <img src="https://i.postimg.cc/hGJxYZ2j/mc1.png" class="w-10 h-10 rounded-full border-2 border-white shadow-sm bg-orange-100" onerror="this.src='https://placehold.co/100x100?text=KC'">
+                        <div>
+                            <div class="flex items-center gap-1.5">
+                                <span class="font-bold text-lg text-primary tracking-tight block leading-none">Kapii Chan</span>
+                                <div class="flex items-center gap-1 bg-green-100 px-1.5 py-0.5 rounded-full border border-green-200">
+                                    <div class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></div>
+                                    <span class="text-[8px] font-bold text-green-700 uppercase tracking-wide">Online</span>
+                                </div>
+                            </div>
+                            <span class="text-[10px] text-gray-400 font-medium">Store</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="w-10 h-10 rounded-full bg-orange-50 border border-orange-100 flex items-center justify-center text-primary shadow-sm relative hover:bg-orange-100 transition-colors cursor-pointer">
+                    <i class="ph-bold ph-bell text-lg"></i>
+                    <span class="absolute top-2 right-2.5 w-2 h-2 bg-red-500 rounded-full border border-white animate-pulse"></span>
+                </div>
+            </div>
+
+            <div class="px-4 pb-4">
+                <div class="relative group">
+                    <i class="ph ph-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-lg group-focus-within:text-primary transition-colors"></i>
+                    <input type="search" id="search-input" placeholder="ค้นหาเกม..." 
+                           class="w-full bg-gray-50/80 border-2 border-transparent rounded-2xl py-2.5 pl-10 pr-10 text-sm focus:border-primary/30 focus:bg-white focus:ring-0 transition-all shadow-inner placeholder:text-gray-400"
+                           oninput="renderProducts(this.value)">
+                    <button id="clear-search" onclick="clearSearch()" class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-red-500 p-2 rounded-full hidden active:scale-90 transition-transform">
+                        <i class="ph-fill ph-x-circle text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <main class="flex-1 container mx-auto max-w-7xl px-3 mt-4 pb-12">
+            <!-- Banner Slider -->
+            <div id="home-banner-container" class="relative group">
+                 <div id="home-banner" class="mb-2 overflow-x-auto hide-scroll snap-x-mandatory flex gap-4 px-1 pb-4 cursor-grab active:cursor-grabbing">
+                    <!-- Banner 1 (mc10) -->
+                    <div class="min-w-[85%] sm:min-w-[300px] h-40 rounded-3xl bg-gradient-to-r from-[#8B4513] to-[#D2691E] relative overflow-hidden snap-center shadow-lg shadow-orange-900/10 flex items-center justify-between p-5 group/item banner-item">
+                        <div class="z-10 text-white">
+                            <h3 class="font-bold text-xl mb-1">Kapii Chan</h3>
+                            <p class="text-xs opacity-90 text-orange-100">บริการเติมเกม 24 ชม.</p>
+                            <span class="mt-3 inline-block bg-black/20 text-white text-[10px] font-bold px-3 py-1.5 rounded-lg border border-white/20 backdrop-blur-sm">ยอดนิยม 🔥</span>
+                        </div>
+                        <img src="https://i.postimg.cc/k5V8HYTy/mc10.png" class="absolute -right-2 -bottom-4 w-32 h-32 object-contain drop-shadow-lg group-hover/item:scale-110 transition-transform duration-500 animate-float">
+                        <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
+                    </div>
+                    <!-- Banner 2 (mc11) -->
+                    <div class="min-w-[85%] sm:min-w-[300px] h-40 rounded-3xl bg-gradient-to-r from-[#FFD700] to-[#FFA500] relative overflow-hidden snap-center shadow-lg shadow-yellow-900/10 flex items-center justify-between p-5 group/item banner-item">
+                        <div class="z-10 text-white">
+                            <h3 class="font-bold text-xl mb-1">โปรโมชั่น!</h3>
+                            <p class="text-xs opacity-90 text-yellow-50">ลดราคาพิเศษวันนี้</p>
+                            <span class="mt-3 inline-block bg-black/20 text-white text-[10px] font-bold px-3 py-1.5 rounded-lg border border-white/20 backdrop-blur-sm">ลดพิเศษ ⚡</span>
+                        </div>
+                        <img src="https://i.postimg.cc/s2BSLHTm/mc11.png" class="absolute -right-2 -bottom-4 w-32 h-32 object-contain drop-shadow-lg group-hover/item:scale-110 transition-transform duration-500">
+                    </div>
+                      <!-- Banner 3 (mc14) -->
+                    <div class="min-w-[85%] sm:min-w-[300px] h-40 rounded-3xl bg-gradient-to-r from-[#20B2AA] to-[#008B8B] relative overflow-hidden snap-center shadow-lg shadow-teal-900/10 flex items-center justify-between p-5 group/item banner-item">
+                        <div class="z-10 text-white">
+                            <h3 class="font-bold text-xl mb-1">ดูแลตลอด 24 ชม.</h3>
+                            <p class="text-xs opacity-90 text-teal-100">แอดมินตอบไว ใจดี</p>
+                            <a href="https://line.me/R/ti/p/@KapiiChan" target="_blank" class="inline-block mt-3 bg-white text-[#008B8B] text-[10px] font-bold px-3 py-1.5 rounded-lg shadow-sm">ติดต่อเรา</a>
+                        </div>
+                        <img src="https://i.postimg.cc/7LC7RtKK/mc14.png" class="absolute -right-2 -bottom-4 w-32 h-32 object-contain drop-shadow-lg group-hover/item:scale-110 transition-transform duration-500">
+                    </div>
+                    <!-- Banner 4 (mc13) -->
+                    <div class="min-w-[85%] sm:min-w-[300px] h-40 rounded-3xl bg-gradient-to-r from-[#FF69B4] to-[#DB7093] relative overflow-hidden snap-center shadow-lg shadow-pink-900/10 flex items-center justify-between p-5 group/item banner-item">
+                        <div class="z-10 text-white">
+                            <h3 class="font-bold text-xl mb-1">รวดเร็วทันใจ</h3>
+                            <p class="text-xs opacity-90 text-pink-100">ระบบออโต้เข้าไว 5 นาที</p>
+                            <span class="mt-3 inline-block bg-black/20 text-white text-[10px] font-bold px-3 py-1.5 rounded-lg border border-white/20 backdrop-blur-sm">เข้าไว 🚀</span>
+                        </div>
+                        <img src="https://i.postimg.cc/bvGb5Vm3/mc13.png" class="absolute -right-2 -bottom-4 w-32 h-32 object-contain drop-shadow-lg group-hover/item:scale-110 transition-transform duration-500">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Marquee -->
+            <div class="mb-6 overflow-hidden bg-white/60 backdrop-blur-sm border border-gray-100 rounded-xl py-2 mx-1 shadow-sm relative">
+                <div class="flex gap-8 whitespace-nowrap animate-marquee">
+                    <div class="flex items-center gap-2 text-[10px] text-gray-500"><span class="w-5 h-5 rounded-full bg-orange-100 text-orange-500 flex items-center justify-center"><i class="ph-fill ph-megaphone"></i></span> ยินดีต้อนรับสู่ Kapii Chan บริการเติมเกมออนไลน์ 24 ชม.</div>
+                    <div class="flex items-center gap-2 text-[10px] text-gray-500"><span class="w-5 h-5 rounded-full bg-green-100 text-green-500 flex items-center justify-center"><i class="ph-fill ph-shield-check"></i></span> ปลอดภัย 100% จดทะเบียนพาณิชย์ถูกต้อง เครดิตแน่น</div>
+                    <div class="flex items-center gap-2 text-[10px] text-gray-500"><span class="w-5 h-5 rounded-full bg-blue-100 text-blue-500 flex items-center justify-center"><i class="ph-fill ph-chat-circle-dots"></i></span> มีปัญหาทักแชทได้ตลอด แอดมินตอบไว ใจดีมาก</div>
+                     <div class="flex items-center gap-2 text-[10px] text-gray-500"><span class="w-5 h-5 rounded-full bg-orange-100 text-orange-500 flex items-center justify-center"><i class="ph-fill ph-megaphone"></i></span> ยินดีต้อนรับสู่ Kapii Chan บริการเติมเกมออนไลน์ 24 ชม.</div>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-between mb-4 px-1">
+                <h2 id="section-title" class="font-bold text-lg text-gray-800 flex items-center gap-2">
+                    <i class="ph-fill ph-fire text-orange-500"></i> สินค้าแนะนำ
+                </h2>
+                <span id="result-count" class="text-xs text-gray-400 bg-gray-100 px-2 py-1 rounded-full">Loading...</span>
+            </div>
+
+            <div id="product-grid" class="grid grid-cols-2 min-[450px]:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 md:gap-4">
+                <!-- Products injected by JS -->
+            </div>
+            
+            <div id="empty-state" class="hidden py-16 text-center col-span-full">
+                <div class="relative w-32 h-32 mx-auto mb-4">
+                    <!-- mc4 Empty State -->
+                    <img src="https://i.postimg.cc/DzWsNpxX/mc4.png" class="w-full h-full object-contain opacity-70">
+                </div>
+                <p class="text-gray-400 text-sm font-medium">ไม่พบสินค้าในหมวดหมู่นี้</p>
+                <button onclick="selectMenu('home')" class="mt-3 text-primary text-xs underline">ดูทั้งหมด</button>
+            </div>
+        </main>
+
+        <footer class="bg-white border-t border-gray-100 pt-12 pb-8 mt-auto rounded-t-[30px] relative overflow-hidden">
+            <!-- Decorative Background Elements (mc12, mc8) -->
+            <img src="https://i.postimg.cc/HLJ5Nv63/mc12.png" class="absolute -left-10 -bottom-10 w-40 opacity-10 pointer-events-none grayscale blur-[2px]">
+            <img src="https://i.postimg.cc/k5V8HYTF/mc8.png" class="absolute -right-10 -top-10 w-40 opacity-10 pointer-events-none grayscale transform scale-x-[-1] blur-[2px]">
+            <div class="absolute inset-0 bg-gradient-to-t from-orange-50/50 to-transparent pointer-events-none"></div>
+
+            <div class="container mx-auto max-w-7xl px-6 relative z-10">
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-12 mb-10">
+                    
+                    <!-- Col 1: Brand & Info (Left) -->
+                    <div class="md:col-span-5 flex flex-col items-center md:items-start text-center md:text-left space-y-4">
+                        <div class="flex items-center gap-3 mb-2">
+                             <div class="w-12 h-12 bg-gradient-to-br from-primary/10 to-orange-100 rounded-2xl flex items-center justify-center text-primary shadow-sm border border-orange-50">
+                                <i class="ph-fill ph-storefront text-2xl"></i>
+                             </div>
+                             <div>
+                                 <h3 class="text-primary font-bold text-xl tracking-tight leading-none">Kapii Chan</h3>
+                                 <p class="text-[10px] text-gray-400 font-medium mt-1">Game Topup Service</p>
+                             </div>
+                        </div>
+                        <p class="text-sm text-gray-500 leading-relaxed max-w-sm">
+                            บริการเติมเกมออนไลน์ครบวงจร ราคาถูก ปลอดภัย 100% เปิดบริการตลอด 24 ชม. ด้วยระบบอัตโนมัติที่รวดเร็วทันใจ
+                        </p>
+                        
+                        <div class="bg-green-50 border border-green-100 rounded-xl px-4 py-2 flex items-center gap-3 shadow-sm hover:shadow-md transition-shadow cursor-default w-fit">
+                            <div class="bg-green-100 p-1.5 rounded-full text-green-600">
+                                <i class="ph-fill ph-seal-check text-lg"></i> 
+                            </div>
+                            <div class="text-left">
+                                <p class="text-[10px] text-gray-400 font-bold uppercase">Verified Merchant</p>
+                                <p class="text-xs font-bold text-green-700">จดทะเบียนพาณิชย์อิเล็กทรอนิกส์</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Col 2: Quick Links (Center) -->
+                    <div class="md:col-span-3 flex flex-col items-center md:items-start">
+                        <h4 class="font-bold text-gray-800 mb-4 flex items-center gap-2">
+                            <i class="ph-fill ph-list-dashes text-orange-400"></i> เมนูลัด
+                        </h4>
+                        <div class="flex flex-col gap-3 text-sm text-gray-500 font-medium w-full max-w-[200px] md:max-w-none">
+                            <a href="#" onclick="selectMenu('home'); window.scrollTo(0,0); return false;" class="flex items-center justify-between group hover:text-primary transition-colors py-1">
+                                <span>หน้าหลัก</span>
+                                <i class="ph-bold ph-caret-right text-xs opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all text-primary"></i>
+                            </a>
+                            <a href="#" onclick="selectMenu('mobile'); window.scrollTo(0,0); return false;" class="flex items-center justify-between group hover:text-primary transition-colors py-1">
+                                <span>เกมมือถือ</span>
+                                <i class="ph-bold ph-caret-right text-xs opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all text-primary"></i>
+                            </a>
+                            <a href="#" onclick="selectMenu('pc'); window.scrollTo(0,0); return false;" class="flex items-center justify-between group hover:text-primary transition-colors py-1">
+                                <span>เกม PC</span>
+                                <i class="ph-bold ph-caret-right text-xs opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all text-primary"></i>
+                            </a>
+                            <a href="#" onclick="openPolicyModal('refund'); return false;" class="flex items-center justify-between group hover:text-primary transition-colors py-1">
+                                <span>เงื่อนไขการใช้บริการ</span>
+                                <i class="ph-bold ph-caret-right text-xs opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all text-primary"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Col 3: Contact (Right) -->
+                    <div class="md:col-span-4 flex flex-col items-center md:items-end text-center md:text-right space-y-4">
+                        <h4 class="font-bold text-gray-800 mb-1 flex items-center gap-2 md:flex-row-reverse">
+                            <i class="ph-fill ph-headset text-orange-400"></i> ติดต่อเรา
+                        </h4>
+                        
+                        <a href="mailto:kapiichan.store@gmail.com" class="group flex items-center gap-3 bg-white border border-gray-100 pl-4 pr-2 py-2 rounded-xl shadow-sm hover:border-orange-200 hover:shadow-md transition-all">
+                            <span class="text-xs font-medium text-gray-500 group-hover:text-primary transition-colors">kapiichan.store@gmail.com</span>
+                            <div class="w-8 h-8 bg-orange-50 rounded-lg flex items-center justify-center text-orange-500 text-sm group-hover:bg-primary group-hover:text-white transition-colors">
+                                <i class="ph-fill ph-envelope-simple"></i>
+                            </div>
+                        </a>
+
+                        <div class="flex gap-3">
+                            <a href="https://line.me/R/ti/p/@KapiiChan" target="_blank" class="w-12 h-12 rounded-2xl bg-[#06C755] text-white flex items-center justify-center hover:bg-[#05b64d] transition-all shadow-lg shadow-green-500/20 hover:-translate-y-1 hover:shadow-green-500/40 relative overflow-hidden group">
+                                <div class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+                                <i class="ph-fill ph-chat-circle-dots text-2xl relative z-10"></i>
+                            </a>
+                            <a href="https://www.facebook.com/share/1BrAwkaah7/" target="_blank" class="w-12 h-12 rounded-2xl bg-[#1877F2] text-white flex items-center justify-center hover:bg-[#166fe5] transition-all shadow-lg shadow-blue-500/20 hover:-translate-y-1 hover:shadow-blue-500/40 relative overflow-hidden group">
+                                <div class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+                                <i class="ph-fill ph-facebook-logo text-2xl relative z-10"></i>
+                            </a>
+                        </div>
+                        <p class="text-[10px] text-gray-400">แอดมินตอบไว 10.00 - 02.00 น.</p>
+                    </div>
+                </div>
+
+                <!-- Footer Bottom -->
+                <div class="border-t border-gray-100/80 pt-6 flex flex-col-reverse md:flex-row justify-between items-center gap-4 text-xs text-gray-400 font-medium">
+                    <p>© 2025 Kapii Chan. All rights reserved.</p>
+                    <div class="flex gap-6">
+                        <button onclick="openPolicyModal('privacy')" class="hover:text-primary transition-colors">นโยบายความเป็นส่วนตัว</button>
+                        <button onclick="openPolicyModal('refund')" class="hover:text-primary transition-colors">เงื่อนไขการคืนเงิน</button>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- DETAIL PAGE (THE FIXED PART) -->
+    <div id="page-detail" class="page fixed inset-0 z-50 bg-[#FFFBF0] overflow-y-auto">
+        <div class="sticky top-0 z-40 glass px-4 py-3 flex items-center gap-3 shadow-sm">
+            <button onclick="goHome()" class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-gray-700 active:bg-gray-100 transition-all shadow-sm border border-gray-100">
+                <i class="ph-bold ph-arrow-left text-lg"></i>
+            </button>
+            <h1 id="detail-title" class="text-base font-bold text-gray-800 line-clamp-1 flex-1 text-center pr-10">รายละเอียด</h1>
+        </div>
+
+        <div class="container mx-auto max-w-3xl pb-32">
+            <div class="w-full h-60 sm:h-72 bg-gray-100 mb-6 relative group rounded-b-[30px] overflow-hidden shadow-lg shadow-orange-900/5">
+                <!-- Product Image -->
+                <img id="detail-img" src="" onerror="this.src='https://i.postimg.cc/Bv8Dz7m2/mc7.png'" class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                <div class="absolute bottom-0 left-0 w-full p-6">
+                    <h2 id="detail-name" class="text-2xl font-bold text-white shadow-sm leading-tight"></h2>
+                    <p id="detail-desc" class="text-sm text-gray-200 mt-1 shadow-sm font-light"></p>
+                </div>
+                
+                <!-- Mascot Overlay 1 (mc5) -->
+                <img src="https://i.postimg.cc/KYKLWp0T/mc5.png" class="absolute -right-4 -bottom-8 w-32 h-32 object-contain drop-shadow-xl animate-float pointer-events-none">
+            </div>
+
+            <div class="px-5 relative">
+                <!-- Mascot Overlay 2 (mc7) Background -->
+                 <img src="https://i.postimg.cc/Bv8Dz7m2/mc7.png" class="absolute -left-10 top-20 w-48 opacity-5 pointer-events-none grayscale">
+
+                <div id="extra-info-box"></div>
+                
+                <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                     <i class="ph-fill ph-package text-orange-500"></i> เลือกแพ็กเกจที่ต้องการ
+                </h3>
+
+                <!-- GRID LAYOUT FOR PACKAGES -->
+                <div id="package-list" class="grid grid-cols-2 min-[450px]:grid-cols-3 gap-3 md:gap-4 pb-10">
+                    <!-- JS will inject cards here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ORDER MODAL -->
+    <div id="order-modal" class="fixed inset-0 z-[80] hidden flex justify-center items-end md:items-center pointer-events-none">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm pointer-events-auto transition-opacity opacity-0" id="modal-bg" onclick="closeModal()"></div>
+        <div id="modal-content" class="bg-white w-full md:w-[420px] rounded-t-[30px] md:rounded-[30px] p-6 relative z-10 pointer-events-auto transform translate-y-full transition-transform duration-300 safe-pb overflow-hidden shadow-2xl">
+            <!-- Close Button -->
+            <button onclick="closeModal()" class="absolute top-4 right-4 w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center text-gray-500 hover:bg-red-50 hover:text-red-500 transition-colors z-20">
+                <i class="ph-bold ph-x"></i>
+            </button>
+
+            <!-- Mascot Modal (mc5) -->
+            <img src="https://i.postimg.cc/KYKLWp0T/mc5.png" class="absolute -right-5 -top-5 w-24 opacity-20 pointer-events-none" onerror="this.style.display='none'">
+            
+            <div class="w-12 h-1.5 bg-gray-200 rounded-full mx-auto mb-6 md:hidden"></div>
+            
+            <div class="flex items-center gap-4 mb-5 pb-4 border-b border-gray-100">
+                <div class="w-14 h-14 bg-gradient-to-br from-primary to-orange-600 rounded-2xl flex items-center justify-center text-white shrink-0 shadow-lg shadow-orange-500/30">
+                    <i class="ph-fill ph-receipt text-3xl"></i>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold text-gray-900 leading-tight">ยืนยันคำสั่งซื้อ</h3>
+                    <p class="text-xs text-gray-500 mt-1">กรุณาชำระเงินและแจ้งสลิป</p>
+                </div>
+            </div>
+
+            <div class="bg-[#003D2E]/5 p-5 rounded-2xl border border-[#00A950]/20 mb-5 relative overflow-hidden group hover:bg-[#003D2E]/10 transition-colors">
+                <div class="relative z-10">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-xs font-bold text-[#00A950] flex items-center gap-2">
+                            <span class="w-6 h-6 bg-[#00A950] rounded-full flex items-center justify-center text-white"><i class="ph-fill ph-bank text-sm"></i></span>
+                            ธ.กสิกรไทย (KBANK)
+                        </span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-2xl font-mono font-bold text-gray-800 tracking-wider">219-116-9185</span>
+                        <button onclick="copyToClipboard('2191169185')" class="bg-white border border-[#00A950]/30 text-[#00A950] px-4 py-1.5 rounded-full text-xs font-bold shadow-sm active:scale-95 transition-transform hover:bg-[#00A950] hover:text-white">
+                            COPY
+                        </button>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-2 pl-8">ชื่อบัญชี: Kapii Chan</p>
+                </div>
+            </div>
+            
+            <div class="mb-4" id="id-input-container">
+                 <label class="text-[10px] text-gray-500 font-bold mb-1.5 ml-1 block uppercase tracking-wide flex items-center gap-1">
+                    <i class="ph-bold ph-user"></i> ระบุ ID / ชื่อตัวละคร
+                 </label>
+                 <input type="text" id="game-id-input" placeholder="พิมพ์ ID หรือ ชื่อตัวละครที่นี่..." 
+                        class="w-full bg-white border border-gray-300 rounded-xl px-4 py-3 text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all shadow-sm placeholder:text-gray-300"
+                        oninput="updateOrderText()">
+            </div>
+
+            <div class="bg-gray-50 p-4 rounded-2xl border border-gray-200 mb-6 relative group focus-within:ring-2 focus-within:ring-primary/20 transition-all">
+                <label class="text-[10px] text-gray-400 font-bold mb-1 ml-1 block uppercase tracking-wide">รายละเอียดการสั่งซื้อ (สำหรับส่งแอดมิน)</label>
+                <textarea id="order-text" class="w-full bg-transparent border-none p-0 text-xs text-gray-600 font-mono resize-none focus:ring-0 leading-relaxed" rows="4" readonly></textarea>
+                <button onclick="copyToClipboard(document.getElementById('order-text').value)" class="absolute top-3 right-3 text-[10px] bg-white border border-gray-200 px-3 py-1.5 rounded-lg text-primary hover:bg-primary hover:text-white active:scale-95 font-bold shadow-sm transition-all">
+                    Copy
+                </button>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+                <button onclick="sendToApp('line')" class="col-span-2 w-full bg-[#06C755] hover:bg-[#05b64d] text-white py-4 rounded-2xl font-bold shadow-lg shadow-green-500/20 active:scale-[0.98] transition-all flex items-center justify-center gap-2 text-sm relative overflow-hidden">
+                    <div class="absolute inset-0 bg-white/20 translate-y-full hover:translate-y-0 transition-transform"></div>
+                    <i class="ph-fill ph-chat-circle-dots text-xl"></i> แจ้งสลิปทาง LINE (Auto)
+                </button>
+                <button onclick="sendToApp('fb')" class="col-span-2 w-full bg-[#1877F2] hover:bg-[#166fe5] text-white py-4 rounded-2xl font-bold shadow-lg shadow-blue-500/20 active:scale-[0.98] transition-all flex items-center justify-center gap-2 text-sm relative overflow-hidden">
+                    <div class="absolute inset-0 bg-white/20 translate-y-full hover:translate-y-0 transition-transform"></div>
+                    <i class="ph-fill ph-facebook-logo text-xl"></i> แจ้งสลิปทาง Facebook
+                </button>
+            </div>
+            <button onclick="closeModal()" class="w-full mt-4 text-gray-400 text-xs py-3 hover:text-gray-600 hover:bg-gray-50 rounded-xl transition-colors">ยกเลิกรายการ</button>
+        </div>
+    </div>
+
+    <!-- Policy Modal -->
+    <div id="policy-modal" class="fixed inset-0 z-[150] hidden flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity opacity-0" id="policy-bg" onclick="closePolicyModal()"></div>
+        <div id="policy-card" class="bg-white w-full max-w-md rounded-3xl shadow-2xl relative z-10 transform scale-95 opacity-0 transition-all duration-300 max-h-[80vh] flex flex-col overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
+                <h3 id="policy-modal-title" class="text-lg font-bold text-gray-800">นโยบาย</h3>
+                <button onclick="closePolicyModal()" class="w-8 h-8 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center hover:bg-gray-300 transition-colors">
+                    <i class="ph-bold ph-x"></i>
+                </button>
+            </div>
+            <div class="p-6 overflow-y-auto" id="policy-modal-body"></div>
+            <div class="p-4 border-t border-gray-100 bg-white">
+                <button onclick="closePolicyModal()" class="w-full bg-primary text-white font-bold py-3 rounded-xl shadow-lg shadow-orange-900/10 active:scale-[0.98] transition-all">รับทราบ</button>
+            </div>
+        </div>
+    </div>
+
+    <button id="back-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="fixed bottom-6 right-6 z-30 w-12 h-12 bg-white text-primary rounded-full shadow-float border border-orange-100 flex items-center justify-center opacity-0 translate-y-10 transition-all pointer-events-none active:scale-90 hover:bg-primary hover:text-white group">
+        <i class="ph-bold ph-arrow-up text-xl group-hover:animate-bounce"></i>
+    </button>
+
+    <script>
+        // --- DATA ---
+        // Image links converted to new postimg links
+        const allProducts = [
+            // --- Mobile Games ---
+            { 
+                id: 'free-fire', name: 'Garena Free Fire', shortName: 'Free Fire', description: 'เติมเพชร Free Fire', category: 'game', platform: 'mobile', genre: 'FPS', 
+                img: 'https://i.postimg.cc/7Zt0mrnH/game-garena-free-frie.jpg', 
+                packages: [
+                    {type:'header', title:'🔻 แพ็กเกจพิเศษ (แนะนำ)'},
+                    {name:'แพ็กรายสัปดาห์มินิ', price:33}, {name:'แพ็กรายสัปดาห์', price:65}, {name:'BP Card', price:86}, {name:'แพ็กรายเดือน', price:288},
+                    {name:'แพ็กเติบโต (Lv.6)', price:9}, {name:'แพ็กเติบโต (Lv.10-25)', price:19}, {name:'แพ็กเติบโต (Lv.30)', price:29},
+                    {type:'header', title:'💎 เติมเพชร'},
+                    {name:'33 เพชร', price:10}, {name:'68 เพชร', price:20}, {name:'172 เพชร', price:48}, {name:'310 เพชร', price:86},
+                    {name:'517 เพชร', price:144}, {name:'690 เพชร', price:192}, {name:'1,052 เพชร', price:288}, {name:'1,801 เพชร', price:479},
+                    {name:'2,111 เพชร', price:567}, {name:'3,698 เพชร', price:955}, {name:'5,499 เพชร', price:1434}, {name:'6,551 เพชร', price:1721},
+                    {name:'7,396 เพชร', price:1910}, {name:'9,197 เพชร', price:2389}, {name:'11,094 เพชร', price:2865}, {name:'12,895 เพชร', price:3344},
+                    {name:'14,792 เพชร', price:3820}, {name:'16,593 เพชร', price:4299}, {name:'18,490 เพชร', price:4775}
+                ] 
+            },
+            { 
+                id: 'rov', name: 'RoV: Arena of Valor', shortName: 'RoV', description: 'เติมคูปอง RoV สะดวกรวดเร็ว', category: 'game', platform: 'mobile', genre: 'MOBA', 
+                img: 'https://i.postimg.cc/sgH7wC4B/game-rov.jpg', 
+                packages: [
+                    {type:'header', title:'💎 เติมคูปอง'},
+                    {name:'11 คูปอง', price:10}, {name:'24 คูปอง', price:20}, {name:'60 คูปอง', price:48}, {name:'72 คูปอง', price:58},
+                    {name:'84 คูปอง', price:67}, {name:'110 คูปอง', price:87}, {name:'121 คูปอง', price:96}, {name:'134 คูปอง', price:108},
+                    {name:'170 คูปอง', price:136}, {name:'185 คูปอง', price:145}, {name:'209 คูปอง', price:164}, {name:'220 คูปอง', price:174},
+                    {name:'245 คูปอง', price:193}, {name:'306 คูปอง', price:245}, {name:'370 คูปอง', price:290}, {name:'394 คูปอง', price:308},
+                    {name:'430 คูปอง', price:338}, {name:'480 คูปอง', price:376}, {name:'555 คูปอง', price:434}, {name:'620 คูปอง', price:482},
+                    {name:'790 คูปอง', price:614}, {name:'1,100 คูปอง', price:854}, {name:'1,240 คูปอง', price:957}, {name:'1,920 คูปอง', price:1484},
+                    {name:'2,480 คูปอง', price:1910}, {name:'3,720 คูปอง', price:2864}, {name:'4,960 คูปอง', price:3820}, {name:'6,200 คูปอง', price:4775},
+                    {name:'12,400 คูปอง', price:9550}
+                ] 
+            },
+            { 
+                id: 'mlbb', name: 'Mobile Legends: Bang Bang', shortName: 'MLBB', description: 'เติมเพชร Mobile Legends', category: 'game', platform: 'mobile', genre: 'MOBA', 
+                img: 'https://i.postimg.cc/Sx1CDbfJ/game-mbll.jpg',
+                packages: [
+                    {type:'header', title:'🔻 แพ็กเกจพิเศษ'},
+                    {name:'One time Weekly', price:48}, {name:'Twilight Pass', price:253},
+                    {name:'โบนัส 50+5', price:25}, {name:'โบนัส 150+15', price:73}, {name:'โบนัส 250+25', price:122}, {name:'โบนัส 500+65', price:239},
+                    {type:'header', title:'💎 เติมเพชร'},
+                    {name:'86 Diamonds', price:40}, {name:'172 Diamonds', price:76}, {name:'257 Diamonds', price:111}, {name:'344 Diamonds', price:153},
+                    {name:'429 Diamonds', price:187}, {name:'514 Diamonds', price:222}, {name:'600 Diamonds', price:263}, {name:'706 Diamonds', price:302},
+                    {name:'792 Diamonds', price:346}, {name:'963 Diamonds', price:417}, {name:'1,412 Diamonds', price:605}, {name:'2,195 Diamonds', price:908},
+                    {name:'2,901 Diamonds', price:1213}, {name:'3,688 Diamonds', price:1497}, {name:'4,394 Diamonds', price:1801}, {name:'5,532 Diamonds', price:2252},
+                    {name:'6,238 Diamonds', price:2555}, {name:'7,376 Diamonds', price:3004}, {name:'9,288 Diamonds', price:3724}
+                ] 
+            },
+            { 
+                id: 'pubg-m', name: 'PUBG Mobile', shortName: 'PUBG M', description: 'เติม UC PUBG Mobile', category: 'game', platform: 'mobile', genre: 'FPS', 
+                img: 'https://i.postimg.cc/VkZnDPWr/game-pubg-mobile.jpg', 
+                packages: [
+                    {type:'header', title:'💎 เติม UC ID ไทย'},
+                    {name:'60 UC', price:32}, {name:'325 UC', price:148}, {name:'660 UC', price:298}, {name:'720 UC', price:328},
+                    {name:'1800 UC', price:735}, {name:'3850 UC(+BP 40)', price:1445}, {name:'5650 UC', price:2170}, {name:'8100 UC(+BP 80)', price:2870},
+                    {name:'32400 UC', price:11300}, {name:'24300 UC', price:8475}, {name:'16200 UC', price:5660},
+                    {type:'header', title:'Special'},
+                    {name:'Prime 1 เดือน', price:35}, {name:'Prime 3 เดือน', price:95}, {name:'Prime 6 เดือน', price:185}, {name:'Prime 12 เดือน', price:379},
+                    {name:'Prime Plus 1 เดือน', price:310}, {name:'Prime Plus 3 เดือน', price:870}, {name:'Prime Plus 6 เดือน', price:1735}, {name:'Prime Plus 12 เดือน', price:3450},
+                    {name:'Weekly Mythic', price:130}, {name:'Weekly Deal 2', price:130}, {name:'Weekly Deal 1', price:45},
+                    {type:'header', title:'💎 เติม UC ID ต่างประเทศ'},
+                    {name:'60 UC (Global)', price:32}, {name:'325 UC (Global)', price:148}, {name:'660 UC (Global)', price:298},
+                    {name:'1,800 UC (Global)', price:735}, {name:'3,850 UC (Global)', price:1445}, {name:'8,100 UC (Global)', price:2870}
+                ] 
+            },
+            { 
+                id: 'genshin', name: 'Genshin Impact', shortName: 'Genshin', description: 'เติม Genesis Crystals & พรดวงจันทร์', category: 'game', platform: 'mobile', genre: 'RPG', 
+                img: 'https://i.postimg.cc/jS3PZY4d/game-genshinipact.jpg', 
+                packages: [
+                    {type:'header', title:'🔻 พรแห่งดวงจันทร์'},
+                    {name:'พรแห่งดวงจันทร์ (1 เดือน)', price:116}, {name:'พรแห่งดวงจันทร์ x2', price:232}, {name:'พรแห่งดวงจันทร์ x3', price:348},
+                    {name:'พรแห่งดวงจันทร์ x4', price:464}, {name:'พรแห่งดวงจันทร์ x5', price:580},
+                    {type:'header', title:'💎 Genesis Crystals'},
+                    {name:'60 Crystals', price:25}, {name:'330 Crystals', price:115}, {name:'1090 Crystals', price:350},
+                    {name:'2240 Crystals', price:723}, {name:'3880 Crystals', price:1168}, {name:'8080 Crystals', price:2238}
+                ] 
+            },
+            { 
+                id: 'fc-mobile', name: 'EA Sports FC Mobile', shortName: 'FC Mobile', description: 'เติม FC Points & Silver', category: 'game', platform: 'mobile', genre: 'Sport', 
+                img: 'https://i.postimg.cc/sgH7wC4y/game-fc-mobile.jpg', 
+                packages: [
+                    {type:'header', title:'💎 FC Points'},
+                    {name:'40 FC Points', price:15}, {name:'100 FC Points', price:34}, {name:'520 FC Points', price:175}, {name:'1,070 FC Points', price:335},
+                    {name:'2,200 FC Points', price:709}, {name:'5,750 FC Points', price:1745}, {name:'12,000 FC Points', price:3545},
+                    {type:'header', title:'⚪ Silver'},
+                    {name:'39 Silver', price:15}, {name:'99 Silver', price:34}, {name:'499 Silver', price:175}, {name:'999 Silver', price:335},
+                    {name:'1,999 Silver', price:705}, {name:'4,999 Silver', price:1745}, {name:'9,999 Silver', price:3545}
+                ] 
+            },
+            { 
+                id: '7k-rebirth', name: 'Seven Knights Re:BIRTH', shortName: '7K Re:BIRTH', description: 'เติม Prism สะสมแต้ม', category: 'game', platform: 'mobile', genre: 'RPG', 
+                img: 'https://i.postimg.cc/W1YgXcwk/game-sevenknightsrb.jpg', 
+                packages: [
+                    {name:'27 ปริซึม', price:62}, {name:'109 ปริซึม', price:260}, {name:'273 ปริซึม', price:630},
+                    {name:'409 ปริซึม', price:935}, {name:'718 ปริซึม', price:1520}, {name:'990 ปริซึม', price:2090}
+                ] 
+            },
+            { 
+                id: 'dnm-classic', name: 'Dragon Nest M Classic', shortName: 'DNM Classic', description: 'เติม Cash สุดคุ้ม', category: 'game', platform: 'mobile', genre: 'RPG', 
+                img: 'https://i.postimg.cc/2S9h2N7f/game-dragon-nest-m-classic.jpg', 
+                packages: [
+                    {name:'626 Cash', price:27}, {name:'3,130 Cash', price:132}, {name:'6,366 Cash', price:270},
+                    {name:'12,800 Cash', price:530}, {name:'19,500 Cash', price:790}, {name:'32,900 Cash', price:1295},
+                    {name:'66,000 Cash', price:2580}, {name:'132,000 Cash', price:5110}, {name:'198,000 Cash', price:7630},
+                    {name:'264,000 Cash', price:10110}, {name:'330,000 Cash', price:12510}
+                ] 
+            },
+            { 
+                id: 'ghost-soul-m', name: 'Ghost Soul M', shortName: 'Ghost Soul M', description: 'เติม Gold & Jade', category: 'game', platform: 'mobile', genre: 'MMORPG', 
+                img: 'https://i.postimg.cc/sgH7wC4g/game-ghost-soul-m.jpg', 
+                packages: [
+                    {type:'header', title:'💎 เพชรแดง'},
+                    {name:'165 เพชรแดง', price:75}, {name:'275 เพชรแดง', price:122}, {name:'550 เพชรแดง', price:240},
+                    {name:'1,100 เพชรแดง', price:475}, {name:'2,200 เพชรแดง', price:935}, {name:'5,500 เพชรแดง', price:2350},
+                    {type:'header', title:'💰 ทอง'},
+                    {name:'120,000 ทอง', price:37}, {name:'600,000 ทอง', price:165}, {name:'1,200,000 ทอง', price:308}, {name:'2,400,000 ทอง', price:508}
+                ] 
+            },
+            { 
+                id: 'nba-infinite', name: 'NBA Infinite', shortName: 'NBA Infinite', description: 'เติม IC Coins', category: 'game', platform: 'mobile', genre: 'Sport', 
+                img: 'https://i.postimg.cc/htZTpR1X/game-nbainfinite.jpg', 
+                packages: [
+                    {name:'100 IC + 30 D', price:38}, {name:'200 IC + 60 D', price:74}, {name:'500 IC + 150 D', price:178},
+                    {name:'1,000 IC + 300 D', price:338}, {name:'2,000 IC + 600 D', price:648}, {name:'3,000 IC + 900 D', price:968},
+                    {name:'5,000 IC + 1,500 D', price:1628}, {name:'10,000 IC + 3,000 D', price:3198}
+                ] 
+            },
+            // --- PC Games ---
+            { 
+                id: 'valorant', name: 'Valorant', shortName: 'Valorant', description: 'เติม VP และ Bundle สกิน', category: 'game', platform: 'pc', genre: 'FPS', 
+                img: 'https://i.postimg.cc/VNSMhZK5/game-valorant.jpg', 
+                packages: [
+                    {type:'header', title:'🔻 Bundle สกิน (พิเศษ)'},
+                    {name:'Nanomight (Gun)', price:375}, {name:'ORA by OneTap (Gun)', price:625}, {name:'Nanomight (Melee)', price:750},
+                    {name:'Dolmir Revenge (Melee)', price:1134}, {name:'ORA by OneTap (Melee)', price:1268}, {name:'Dolmir Revenge (Set)', price:2143}, {name:'ORA by OneTap (Set)', price:2402},
+                    {type:'header', title:'💎 เติม VP ปกติ'},
+                    {name:'475 VP', price:123}, {name:'1,000 VP', price:245}, {name:'1,475 VP', price:367}, {name:'2,050 VP', price:488},
+                    {name:'2,525 VP', price:615}, {name:'3,050 VP', price:735}, {name:'3,650 VP', price:865}, {name:'4,100 VP', price:975},
+                    {name:'5,350 VP', price:1240}, {name:'5,825 VP', price:1360}, {name:'7,400 VP', price:1725}, {name:'8,200 VP', price:1950},
+                    {name:'9,000 VP', price:2105}, {name:'11,000 VP', price:2480}, {name:'12,000 VP', price:2730}, {name:'14,650 VP', price:3350},
+                    {name:'16,350 VP', price:3730}, {name:'22,000 VP', price:4960}
+                ] 
+            },
+            { 
+                id: 'tft', name: 'Teamfight Tactics', shortName: 'TFT', description: 'เติม Coin TFT', category: 'game', platform: 'pc', genre: 'Strategy', 
+                img: 'https://i.postimg.cc/y8pcvCy9/game-tft.jpg', 
+                packages: [
+                    {name:'575 Coin', price:130}, {name:'1,380 Coin', price:275}, {name:'2,800 Coin', price:530},
+                    {name:'4,500 Coin', price:844}, {name:'6,500 Coin', price:1185}, {name:'13,500 Coin', price:2410}
+                ] 
+            },
+            // --- Cards ---
+            { 
+                id: 'razer-gold', name: 'Razer Gold PIN', shortName: 'Razer Gold', description: 'บัตรเติมเงิน Razer Gold', category: 'card', 
+                img: 'https://i.postimg.cc/VkkXqkMT/card-rezer-gold.jpg', 
+                packages: [
+                    {name:'฿50', price:48}, {name:'฿100', price:96}, {name:'฿300', price:282}, {name:'฿500', price:470},
+                    {name:'฿1,000', price:935}, {name:'฿3,500', price:3255}, {name:'฿5,000', price:4640}
+                ] 
+            },
+            { 
+                id: 'steam', name: 'Steam Wallet THB', shortName: 'Steam', description: 'Steam Wallet Code ไทย', category: 'card', 
+                img: 'https://i.postimg.cc/YCDYbBzc/card-steam-wallet.jpg', 
+                packages: [
+                    {name:'50 THB', price:49}, {name:'75 THB', price:74}, {name:'100 THB', price:98}, {name:'200 THB', price:196},
+                    {name:'250 THB', price:245}, {name:'350 THB', price:343}, {name:'750 THB', price:735}, {name:'1,000 THB', price:980},
+                    {name:'1,500 THB', price:1470}, {name:'2,000 THB', price:1960}
+                ] 
+            },
+            { 
+                id: 'riot-cash', name: 'Riot Cash Card', shortName: 'Riot Cash', description: 'บัตรเติมเงิน Riot Games', category: 'card', 
+                img: 'https://i.postimg.cc/kggWQg8k/card-riot-games.jpg', 
+                packages: [
+                    {name:'139 บาท', price:133}, {name:'279 บาท', price:274}, {name:'559 บาท', price:548},
+                    {name:'979 บาท', price:960}, {name:'1,400 บาท', price:1330}, {name:'2,800 บาท', price:2680}
+                ] 
+            },
+            { 
+                id: 'roblox', name: 'Roblox Gift Card', shortName: 'Roblox', description: 'บัตรเติมเงิน Roblox', category: 'card', 
+                img: 'https://i.postimg.cc/XY1dQ6cm/card-roblox-gift-card.jpg', 
+                packages: [
+                    {type:'header', title:'🇹🇭 THB'},
+                    {name:'300 THB', price:294}, {name:'750 THB', price:735},
+                    {type:'header', title:'🇺🇸 USD'},
+                    {name:'10 USD', price:330}, {name:'25 USD', price:825}, {name:'50 USD', price:1650}
+                ] 
+            },
+            // --- Vouchers & Apps ---
+            { 
+                id: 'truemoney', name: 'TrueMoney', shortName: 'TrueMoney', description: 'รหัสบัตรเงินสดทรูมันนี่', category: 'voucher', 
+                img: 'https://i.postimg.cc/6pbnYxfJ/card-true-wallet.jpg', 
+                packages: [
+                    {name:'50 บาท', price:50}, {name:'90 บาท', price:90}, {name:'150 บาท', price:150},
+                    {name:'300 บาท', price:300}, {name:'500 บาท', price:500}, {name:'1000 บาท', price:1000}
+                ] 
+            },
+            { 
+                id: 'line', name: 'Line Prepaid', shortName: 'Line Card', description: 'เติมเครดิต Line Store', category: 'voucher', 
+                img: 'https://i.postimg.cc/3xx2XxmQ/app-line-prepaid-card.jpg', 
+                packages: [{name:'100 บาท', price:100}, {name:'300 บาท', price:300}, {name:'500 บาท', price:500}] 
+            },
+            { 
+                id: 'bigo', name: 'Bigo Live', shortName: 'Bigo Live', description: 'เติมเพชร Bigo Live', category: 'voucher', 
+                img: 'https://i.postimg.cc/hPr9QdJy/app-bigo-live.jpg', 
+                packages: [
+                    {name:'55 Diamonds', price:42}, {name:'100 Diamonds', price:78}, {name:'200 Diamonds', price:155}, {name:'500 Diamonds', price:380}
+                ] 
+            },
+            { 
+                id: 'tinder', name: 'Tinder', shortName: 'Tinder', description: 'อัปเกรด Tinder Plus/Gold', category: 'voucher', 
+                img: 'https://i.postimg.cc/P551W5Z0/app-tinder.jpg', 
+                packages: [
+                    {name:'Plus (1 เดือน)', price:189}, {name:'Gold (1 เดือน)', price:299}
+                ] 
+            }
+        ];
+
+        // --- STATE & LOGIC ---
+        let currentMode = 'home'; 
+        let selectedGenres = new Set();
+        let currentOrder = { product: '', package: '', price: 0 };
+        let currentProduct = null;
+        let bannerInterval;
+        let isTouching = false;
+
+        function selectMenu(mode) {
+            currentMode = mode;
+            selectedGenres.clear();
+            
+            document.querySelectorAll('.tree-item').forEach(el => el.classList.remove('active-menu'));
+            document.querySelectorAll('.custom-checkbox').forEach(cb => cb.checked = false);
+            
+            const activeItem = document.getElementById(`menu-${mode}`);
+            if(activeItem) {
+                activeItem.classList.add('active-menu');
+                
+                const child = document.getElementById(`child-${mode}`);
+                const arrow = document.getElementById(`arrow-${mode}`);
+                
+                if(child) {
+                    document.querySelectorAll('.tree-children').forEach(el => {
+                        if(el.id !== `child-${mode}`) el.classList.remove('show');
+                    });
+                    document.querySelectorAll('.tree-arrow').forEach(el => {
+                        if(el.id !== `arrow-${mode}`) el.classList.remove('expanded');
+                    });
+                    child.classList.add('show');
+                }
+                if(arrow) arrow.classList.add('expanded');
+            }
+
+            updateSectionTitle();
+            renderProducts();
+            
+            if(window.innerWidth < 768 && mode !== 'home') {
+                 const sb = document.getElementById('sidebar');
+                 if(sb && sb.classList.contains('sidebar-open')) toggleSidebar();
+            }
+        }
+
+        function toggleGenre(genre) {
+            if(selectedGenres.has(genre)) selectedGenres.delete(genre);
+            else selectedGenres.add(genre);
+            renderProducts();
+        }
+
+        function updateSectionTitle() {
+            const titles = {
+                'home': '<i class="ph-fill ph-fire text-orange-500"></i> สินค้าแนะนำ',
+                'pc': '<i class="ph-fill ph-desktop text-blue-500"></i> PC Games',
+                'mobile': '<i class="ph-fill ph-device-mobile text-green-500"></i> Mobile Games',
+                'card': '<i class="ph-fill ph-credit-card text-purple-500"></i> บัตรเติมเงิน',
+                'voucher': '<i class="ph-fill ph-ticket text-pink-500"></i> วอเชอร์ & แอป'
+            };
+            const titleEl = document.getElementById('section-title');
+            if(titleEl) titleEl.innerHTML = titles[currentMode] || 'สินค้าทั้งหมด';
+            
+            const bannerContainer = document.getElementById('home-banner-container');
+            if(bannerContainer) {
+                if(currentMode === 'home') bannerContainer.classList.remove('hidden');
+                else bannerContainer.classList.add('hidden');
+            }
+        }
+
+        function renderProducts(searchVal = '') {
+            const grid = document.getElementById('product-grid');
+            if(!grid) return;
+            const empty = document.getElementById('empty-state');
+            
+            const clearBtn = document.getElementById('clear-search');
+            if(clearBtn) {
+                if (searchVal.length > 0) clearBtn.classList.remove('hidden');
+                else clearBtn.classList.add('hidden');
+            }
+
+            grid.innerHTML = '';
+
+            let filtered = allProducts.filter(p => {
+                if (currentMode === 'pc') return p.category === 'game' && p.platform === 'pc';
+                if (currentMode === 'mobile') return p.category === 'game' && p.platform === 'mobile';
+                if (currentMode === 'card') return p.category === 'card';
+                if (currentMode === 'voucher') return p.category === 'voucher';
+                return true; 
+            });
+
+            if (selectedGenres.size > 0) {
+                filtered = filtered.filter(p => selectedGenres.has(p.genre));
+            }
+
+            if (searchVal) {
+                const lower = searchVal.toLowerCase();
+                filtered = filtered.filter(p => p.name.toLowerCase().includes(lower) || p.shortName.toLowerCase().includes(lower));
+            }
+
+            const countEl = document.getElementById('result-count');
+            if(countEl) countEl.innerText = `${filtered.length} รายการ`;
+
+            if (filtered.length === 0) {
+                if(empty) empty.classList.remove('hidden');
+            } else {
+                if(empty) empty.classList.add('hidden');
+                grid.innerHTML = filtered.map((p, idx) => {
+                    const minPrice = Math.min(...p.packages.filter(pkg => !pkg.type).map(pkg => pkg.price > 0 ? pkg.price : 999999));
+                    const displayPrice = minPrice === 999999 ? 'ดูราคา' : `เริ่มที่ ฿${minPrice.toLocaleString()}`;
+                    let tags = '';
+                    if(p.genre) tags += `<span class="bg-orange-100 text-orange-500 px-1.5 rounded text-[9px]">${p.genre}</span>`;
+                    
+                    const fallbackImg = 'https://i.postimg.cc/vm19K20x/mc3.png';
+
+                    return `
+                    <div onclick="openDetail('${p.id}')" class="group bg-white rounded-2xl p-2.5 shadow-card hover:shadow-float transition-all border border-gray-100 block animate-fade-up hover:-translate-y-1 cursor-pointer" style="animation-delay: ${idx*0.05}s" role="button" tabindex="0">
+                        <div class="relative w-full aspect-square rounded-xl bg-gray-50 mb-3 overflow-hidden group-hover:ring-2 group-hover:ring-primary/20 transition-all">
+                            <img src="${p.img}" onerror="this.src='${fallbackImg}'" loading="lazy" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="${p.name}">
+                            <div class="absolute bottom-1 right-1 bg-white/95 backdrop-blur-sm px-2.5 py-1 rounded-lg text-[10px] font-bold text-primary shadow-sm border border-orange-100 flex items-center gap-1">
+                                 ${displayPrice}
+                            </div>
+                        </div>
+                        <div class="px-1 text-center pb-1">
+                            <h3 class="text-sm font-bold text-gray-800 line-clamp-1 leading-tight group-hover:text-primary transition-colors">${p.shortName}</h3>
+                            <div class="mt-1 flex justify-center items-center opacity-80">${tags}</div>
+                        </div>
+                    </div>`;
+                }).join('');
+            }
+        }
+        
+        function clearSearch() {
+            const input = document.getElementById('search-input');
+            if(input) {
+                input.value = '';
+                renderProducts('');
+                input.focus();
+            }
+        }
+
+        // --- DETAIL & MODAL ---
+        function openDetail(id) {
+            const p = allProducts.find(x => x.id === id);
+            if (!p) return;
+            currentProduct = p;
+
+            document.getElementById('detail-name').innerText = p.name;
+            document.getElementById('detail-desc').innerText = p.description;
+            document.getElementById('detail-img').src = p.img;
+            document.getElementById('detail-img').onerror = function() {
+                this.src = 'https://i.postimg.cc/Bv8Dz7m2/mc7.png';
+            };
+
+            const infoBox = document.getElementById('extra-info-box');
+            infoBox.innerHTML = ''; 
+            if (p.category === 'card' || p.category === 'voucher') {
+                infoBox.innerHTML = `<div class="bg-blue-50 border border-blue-100 rounded-xl p-4 mb-5 text-xs text-blue-800 flex gap-3 items-start shadow-sm"><div class="bg-blue-100 p-1.5 rounded-full text-blue-600 shrink-0"><i class="ph-fill ph-info text-lg"></i></div><span class="mt-0.5 leading-relaxed">สินค้าประเภทบัตร/โค้ด ระบบจะจัดส่งให้ทางแชท หลังจากแจ้งชำระเงินเรียบร้อยแล้ว</span></div>`;
+            }
+            
+            const pkgList = document.getElementById('package-list');
+            pkgList.innerHTML = p.packages.map((pkg, idx) => {
+                if(pkg.type === 'header') {
+                      return `
+                      <div class="col-span-2 min-[450px]:col-span-3 mt-4 mb-2 flex items-center gap-2">
+                        <div class="w-8 h-8 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center shadow-inner">
+                            <i class="ph-fill ph-star"></i>
+                        </div>
+                        <span class="text-sm font-bold text-gray-700">${pkg.title}</span>
+                        <div class="h-[1px] flex-1 bg-gradient-to-r from-gray-200 to-transparent"></div>
+                      </div>`;
+                }
+                const priceText = pkg.price > 0 ? `฿${pkg.price.toLocaleString()}` : 'เช็คราคา';
+                let iconClass = 'ph-diamond';
+                if(pkg.name.includes('Weekly') || pkg.name.includes('Pass')) iconClass = 'ph-crown';
+                else if(pkg.name.includes('Coin') || pkg.name.includes('Gold')) iconClass = 'ph-coins';
+                const isHot = idx % 5 === 0 ? '<span class="absolute top-0 right-0 bg-red-500 text-white text-[8px] font-bold px-2 py-0.5 rounded-bl-lg shadow-sm z-10">HOT</span>' : '';
+
+                return `
+                <div onclick="openOrderModal('${p.name}', '${pkg.name}', ${pkg.price})" 
+                     class="group relative flex flex-col items-center justify-between p-3 bg-white border-2 border-gray-100 rounded-2xl cursor-pointer transition-all duration-300 hover:border-orange-400 hover:shadow-xl hover:-translate-y-1 overflow-hidden" role="button">
+                    ${isHot}
+                    <div class="absolute -right-4 -top-4 w-16 h-16 bg-gradient-to-br from-orange-50 to-transparent rounded-full opacity-50 group-hover:scale-150 transition-transform duration-500"></div>
+                    <div class="w-12 h-12 mb-2 rounded-full bg-orange-50 text-orange-500 flex items-center justify-center text-2xl shadow-inner group-hover:scale-110 transition-transform duration-300 relative z-10">
+                        <i class="ph-fill ${iconClass}"></i>
+                    </div>
+                    <span class="text-xs font-bold text-gray-600 text-center leading-tight line-clamp-2 h-8 flex items-center justify-center w-full relative z-10 group-hover:text-gray-900 transition-colors">
+                        ${pkg.name}
+                    </span>
+                    <div class="mt-3 w-full">
+                        <div class="w-full bg-gradient-to-r from-primary to-orange-600 text-white text-xs font-bold py-2 rounded-xl text-center shadow-md group-hover:shadow-glow group-hover:from-orange-600 group-hover:to-red-500 transition-all duration-300">
+                            ${priceText}
+                        </div>
+                    </div>
+                </div>
+            `}).join('');
+
+            document.getElementById('page-home').classList.remove('active');
+            document.getElementById('page-detail').classList.add('active');
+            window.scrollTo(0,0);
+        }
+
+        function goHome() {
+            document.getElementById('page-detail').classList.remove('active');
+            document.getElementById('page-home').classList.add('active');
+        }
+
+        function openOrderModal(pName, pkgName, price) {
+            const displayPrice = price > 0 ? price : 'สอบถามแอดมิน';
+            currentOrder = { product: pName, package: pkgName, price: displayPrice };
+            
+            const idContainer = document.getElementById('id-input-container');
+            if (currentProduct && (currentProduct.category === 'card' || currentProduct.category === 'voucher')) {
+                idContainer.classList.add('hidden');
+            } else {
+                idContainer.classList.remove('hidden');
+            }
+            
+            document.getElementById('game-id-input').value = '';
+            updateOrderText();
+            
+            const modal = document.getElementById('order-modal');
+            const content = document.getElementById('modal-content');
+            const bg = document.getElementById('modal-bg');
+            
+            modal.classList.remove('hidden');
+            document.body.classList.add('modal-open');
+            
+            setTimeout(() => {
+                bg.classList.remove('opacity-0');
+                content.classList.remove('translate-y-full');
+            }, 10);
+            
+            if (!idContainer.classList.contains('hidden')) {
+                setTimeout(() => document.getElementById('game-id-input').focus(), 350);
+            }
+        }
+
+        function updateOrderText() {
+            const idVal = document.getElementById('game-id-input').value.trim() || '(รอระบุ)';
+            const priceText = typeof currentOrder.price === 'number' ? `${currentOrder.price.toLocaleString()} บาท` : currentOrder.price;
+            let text = `🛒 สินค้า: ${currentOrder.product}\n📦 แพ็ก: ${currentOrder.package}\n💰 ราคา: ${priceText}`;
+            if (currentProduct && currentProduct.category !== 'card' && currentProduct.category !== 'voucher') {
+                text += `\n----------------\n👤 ID/ชื่อตัวละคร: ${idVal}`;
+            }
+            document.getElementById('order-text').value = text;
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('order-modal');
+            const content = document.getElementById('modal-content');
+            const bg = document.getElementById('modal-bg');
+            bg.classList.add('opacity-0');
+            content.classList.add('translate-y-full');
+            document.body.classList.remove('modal-open');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        }
+
+        async function copyToClipboard(text) {
+            try {
+                if (navigator.clipboard && window.isSecureContext) {
+                    await navigator.clipboard.writeText(text);
+                } else {
+                    const textArea = document.createElement("textarea"); 
+                    textArea.value = text;
+                    textArea.style.position = "fixed";
+                    textArea.style.left = "-9999px";
+                    document.body.appendChild(textArea); 
+                    textArea.focus();
+                    textArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                }
+                showToast('คัดลอกเรียบร้อย!');
+            } catch (err) {
+                showToast('ไม่สามารถคัดลอกได้');
+            }
+        }
+
+        async function sendToApp(app) {
+            const text = document.getElementById('order-text').value;
+            if (currentProduct && currentProduct.category !== 'card' && currentProduct.category !== 'voucher') {
+                const idVal = document.getElementById('game-id-input').value.trim();
+                if(!idVal) {
+                    showToast('กรุณาระบุ ID/ชื่อ ก่อนนะครับ');
+                    document.getElementById('game-id-input').focus();
+                    document.getElementById('game-id-input').classList.add('ring-2', 'ring-red-400');
+                    setTimeout(() => document.getElementById('game-id-input').classList.remove('ring-2', 'ring-red-400'), 1000);
+                    return;
+                }
+            }
+            if(app === 'line') {
+                window.open(`https://line.me/R/oaMessage/@KapiiChan/?${encodeURIComponent(text)}`, '_blank');
+            } else {
+                await copyToClipboard(text);
+                showToast('คัดลอกแล้ว กำลังเปิด FB...');
+                setTimeout(() => window.open('https://www.facebook.com/share/1BrAwkaah7/', '_blank'), 800);
+            }
+            closeModal();
+        }
+        
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            document.getElementById('toast-msg').innerText = msg;
+            t.classList.remove('opacity-0', 'pointer-events-none', 'scale-90');
+            setTimeout(() => t.classList.add('opacity-0', 'pointer-events-none', 'scale-90'), 2500);
+        }
+
+        function toggleSidebar() {
+            const sb = document.getElementById('sidebar');
+            const ov = document.getElementById('sidebar-overlay');
+            if (sb.classList.contains('sidebar-closed')) {
+                sb.classList.remove('sidebar-closed'); sb.classList.add('sidebar-open');
+                ov.classList.remove('hidden'); setTimeout(() => ov.classList.remove('opacity-0'), 10);
+                document.body.style.overflow = 'hidden';
+            } else {
+                sb.classList.remove('sidebar-open'); sb.classList.add('sidebar-closed');
+                ov.classList.add('opacity-0'); setTimeout(() => ov.classList.add('hidden'), 300);
+                document.body.style.overflow = '';
+            }
+        }
+        
+        function checkShopCredit() {
+             const modal = document.getElementById('credit-modal');
+             const content = document.getElementById('credit-content');
+             if(!document.getElementById('sidebar').classList.contains('sidebar-closed')) toggleSidebar();
+             modal.classList.remove('hidden');
+             setTimeout(() => { content.classList.remove('scale-90', 'opacity-0'); content.classList.add('scale-100', 'opacity-100'); }, 10);
+             setTimeout(() => { content.classList.remove('scale-100', 'opacity-100'); content.classList.add('scale-90', 'opacity-0'); setTimeout(() => modal.classList.add('hidden'), 300); }, 2500);
+        }
+        
+        function startBannerAutoScroll() {
+            const container = document.getElementById('home-banner');
+            if(!container) return;
+            const existingClones = container.querySelectorAll('.banner-clone');
+            existingClones.forEach(el => el.remove());
+
+            let items = container.querySelectorAll('.banner-item');
+            if(items.length < 2) return;
+
+            const firstClone = items[0].cloneNode(true);
+            firstClone.classList.add('banner-clone');
+            container.appendChild(firstClone);
+
+            const itemWidth = items[0].offsetWidth + 16; 
+            container.scrollLeft = 0;
+            let currentIndex = 0;
+
+            container.addEventListener('touchstart', () => { isTouching = true; });
+            container.addEventListener('touchend', () => { 
+                isTouching = false;
+                currentIndex = Math.round(container.scrollLeft / itemWidth);
+            });
+
+            if (bannerInterval) clearInterval(bannerInterval);
+            bannerInterval = setInterval(() => {
+                if(container.matches(':hover') || isTouching) return;
+                currentIndex++;
+                container.scrollTo({ left: currentIndex * itemWidth, behavior: 'smooth' });
+                if (currentIndex === items.length) {
+                    setTimeout(() => {
+                        container.scrollTo({ left: 0, behavior: 'auto' }); 
+                        currentIndex = 0;
+                    }, 500); 
+                }
+            }, 4000);
+        }
+
+        window.addEventListener('scroll', () => {
+            const btn = document.getElementById('back-to-top');
+            if(!btn) return;
+            if(window.scrollY > 300) btn.classList.remove('opacity-0', 'translate-y-10', 'pointer-events-none');
+            else btn.classList.add('opacity-0', 'translate-y-10', 'pointer-events-none');
+        });
+
+        const policyData = {
+            'refund': {
+                title: '<i class="ph-fill ph-arrow-counter-clockwise text-primary"></i> เงื่อนไขการคืนเงิน',
+                content: `<div class="space-y-4 text-sm text-gray-600 leading-relaxed"><div class="bg-orange-50 border border-orange-100 p-3 rounded-xl text-orange-800 text-xs font-bold mb-2"><i class="ph-bold ph-warning-circle"></i> โปรดอ่านทำความเข้าใจก่อนใช้บริการ</div><div><h4 class="font-bold text-gray-800 mb-1">1. การยกเลิกและคืนเงิน</h4><p>เนื่องจากเป็นสินค้าดิจิทัล... (ไม่สามารถขอคืนเงินได้)</p></div></div>`
+            },
+            'privacy': {
+                title: '<i class="ph-fill ph-shield-check text-green-600"></i> นโยบายความเป็นส่วนตัว',
+                content: `<div class="space-y-4 text-sm text-gray-600 leading-relaxed"><div class="bg-green-50 border border-green-100 p-3 rounded-xl text-green-800 text-xs font-bold mb-2 flex items-center gap-2"><i class="ph-fill ph-lock-key"></i> ข้อมูลของท่านปลอดภัย 100%</div><p>Kapii Chan ให้ความสำคัญกับข้อมูลส่วนตัว...</p></div>`
+            }
+        };
+
+        function openPolicyModal(type) {
+            const data = policyData[type];
+            if(!data) return;
+            document.getElementById('policy-modal-title').innerHTML = data.title;
+            document.getElementById('policy-modal-body').innerHTML = data.content;
+            const modal = document.getElementById('policy-modal');
+            const bg = document.getElementById('policy-bg');
+            const card = document.getElementById('policy-card');
+            modal.classList.remove('hidden');
+            document.body.classList.add('modal-open');
+            setTimeout(() => {
+                bg.classList.remove('opacity-0');
+                card.classList.remove('scale-95', 'opacity-0');
+                card.classList.add('scale-100', 'opacity-100');
+            }, 10);
+        }
+
+        function closePolicyModal() {
+            const modal = document.getElementById('policy-modal');
+            const bg = document.getElementById('policy-bg');
+            const card = document.getElementById('policy-card');
+            bg.classList.add('opacity-0');
+            card.classList.remove('scale-100', 'opacity-100');
+            card.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                document.body.classList.remove('modal-open');
+            }, 300);
+        }
+
+        // Initialize safely
+        document.addEventListener('DOMContentLoaded', () => {
+            selectMenu('home');
+            startBannerAutoScroll();
+        });
+    </script>
+</body>
+</html>
